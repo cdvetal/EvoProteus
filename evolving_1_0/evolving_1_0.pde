@@ -3,7 +3,6 @@
 import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map;
-//import g4p_controls.*;
 
 ArrayList <Server> servers = new ArrayList<Server>(); //--> ArrayList of Servers for each individual
 Client v_m;
@@ -24,7 +23,6 @@ int popCounter = -1;
 Main m = new Main();
 serverListener s = new serverListener();
 Button [] b  = new  Button [4]; // --> Array of button objects
-//GTextField txt_pop, txt_mut;
 
 PFont font;
 String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.ttf";
@@ -33,7 +31,7 @@ String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.ttf";
 float btn_height = 420; // --> Firts button y-pos on screen
 String [] btn_txt = new String [4];
 
-//--> Genetic variables
+//--> Operators
 int populationSize = 8;
 float mutationRate;
 
@@ -62,13 +60,6 @@ void setup() {
 
   // --> .pde skecthes extraction
   selectInput("Select a file to process:", "fileSelected");
-
-  //Textbox for settings
-  /*createBox(txt_pop, width/2 + 65, 317, 60, 16);
-   elements(font, SGrotesk_Regular, 14, "Population size:", 78, 330);
-   
-   createBox(txt_pop, width/2 + 65, 347, 60, 16);
-   elements(font, SGrotesk_Regular, 14, "Mutation probability:", 97, 360);*/
 }
 
 void draw() {
@@ -80,10 +71,6 @@ void draw() {
 
   s.listenStatus();
   s.serverPrint();
-
-  /*if (keyPressed && key == ENTER) {
-   println(populationSize);
-   }*/
 }
 
 void mousePressed() {
