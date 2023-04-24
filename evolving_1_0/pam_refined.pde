@@ -1,9 +1,9 @@
-class Pam_refined {
+class pamRefined {
 
   String type, name, value, limits;
 
-  Pam_refined(String t, String n, String v, String l) {
-    
+  pamRefined(String t, String n, String v, String l) {
+
     type=t;
     name=n;
     value=v;

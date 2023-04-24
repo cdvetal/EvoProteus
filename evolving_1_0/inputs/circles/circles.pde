@@ -1,0 +1,42 @@
+/**
+ * Functions.
+ *
+ * The drawTarget() function makes it easy to draw many distinct targets.
+ * Each call to drawTarget() specifies the position, size, and number of
+ * rings for each target.
+ */
+
+float __h= 200; //min:0 max:360
+float __s = 40; //min:0 max:100
+float __b = 80; //min:0 max:100
+float __op = 50; //min:0 max:100
+
+int __num_circles= 3; //min:1 max:6
+int __num_min= 4; //min:2 max:10
+int __num_max= 20; //min:10 max:30
+
+float __pos= 0.25; //min:0.1 max:0.4
+float __size= 100; //min:20 max:200
+
+void setup() {
+  size(300, 200);
+  colorMode(HSB, 360, 100, 100);
+  background(0);
+  noStroke();
+
+
+  for (int i = 0; i < __num_circles; i++) {
+    drawTarget(width * __pos * i, height * random(1), __size, int(random(__num_min, __num_max)));
+  }
+}
+
+void draw() {
+}
+
+void drawTarget(float xloc, float yloc, float size, int num) {
+  float steps = size/num;
+  for (int i = 0; i < num; i++) {
+    fill(__h+(5*i), __s+(5*i), __b+(5*i), __op);
+    ellipse(xloc, yloc, size - i*steps, size - i*steps);
+  }
+}
