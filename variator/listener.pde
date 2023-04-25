@@ -28,4 +28,10 @@ class serverListener {
       println(me.getKey() + " is " + me.getValue());
     }
   }
+
+  void serverShutdown () {
+    for (int i = 0; i < servers.size(); i++) {
+      servers.get(i).write(exitSketch);
+    }
+  }
 }

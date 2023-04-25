@@ -163,30 +163,33 @@ class Main {
 
     // --> Client-Server injection code entries
     String injectedSetup [] = new String [5];
-    String injectedBegin [] = new String [8];
-    String injectedDraw  [] = new String [5];
+    String injectedBegin [] = new String [9];
+    String injectedDraw  [] = new String [6];
 
 
-    injectedBegin [7] = "import processing.net.*; //INJECTED LINE";
-    injectedBegin [6] = "import processing.awt.PSurfaceAWT; //INJECTED LINE";
-    injectedBegin [5] = "PSurfaceAWT.SmoothCanvas smoothCanvas; //INJECTED LINE";
-    injectedBegin [4] = "Client v_m; //INJECTED LINE";
-    injectedBegin [3] = "int listener = 0; //INJECTED LINE";
-    injectedBegin [2] = "void exit() { windowOpen = false; thread(\"exitDelay\");}";
-    injectedBegin [1] = "boolean windowOpen = true;";
-    injectedBegin [0] = "void exitDelay(){delay(1500); System.exit(0);}";
+    injectedBegin [8] = "import processing.net.*; //variator";
+    injectedBegin [7] = "import processing.awt.PSurfaceAWT; //variator";
+    injectedBegin [6] = "PSurfaceAWT.SmoothCanvas smoothCanvas; //variator";
+    injectedBegin [5] = "Client v_m; //variator";
+    injectedBegin [4] = "int listener = 0; //variator";
+    injectedBegin [3] = "void exit() { windowOpen = false; thread(\"exitDelay\");}";
+    injectedBegin [2] = "boolean windowOpen = true;";
+    injectedBegin [1] = "void exitDelay(){delay(1500); System.exit(0);}";
+    injectedBegin [0] = "String input; int exitValue;";
 
-    injectedSetup [4] = "surface.setLocation("+ gridX + ","+ gridY+"); //INJECTED LINE";
-    injectedSetup [3] = "PSurfaceAWT awtSurface = (PSurfaceAWT)surface; //INJECTED LINE";
-    injectedSetup [2] = "smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative(); //INJECTED LINE";
-    injectedSetup [1] = "println(\"[Client] Client connected\"); //INJECTED LINE";
-    injectedSetup [0] = "v_m = new Client(this, \"localhost\", 3000 + " + counter + "); //INJECTED LINE";
+    injectedSetup [4] = "surface.setLocation("+ gridX + ","+ gridY+"); //variator";
+    injectedSetup [3] = "PSurfaceAWT awtSurface = (PSurfaceAWT)surface; //variator";
+    injectedSetup [2] = "smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative(); //variator";
+    injectedSetup [1] = "println(\"[Client] Client connected\"); //variator";
+    injectedSetup [0] = "v_m = new Client(this, \"localhost\", 3000 + " + counter + "); //variator";
 
-    injectedDraw [4] = "final String sketch = getClass().getName();//INJECTED LINE";
-    injectedDraw [3] = "java.awt.Point p = new java.awt.Point();//INJECTED LINE";
-    injectedDraw [2] = "smoothCanvas.getFrame().getLocation(p);//INJECTED LINE";
-    injectedDraw [1] = "if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;} //INJECTED LINE";
-    injectedDraw [0] = "v_m.write(sketch + \" \" + listener + \" \"); //INJECTED LINE";
+    injectedDraw [5] = "final String sketch = getClass().getName();//variator";
+    injectedDraw [4] = "java.awt.Point p = new java.awt.Point();//variator";
+    injectedDraw [3] = "smoothCanvas.getFrame().getLocation(p);//variator";
+    injectedDraw [2] = "if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;} //variator";
+    injectedDraw [1] = "v_m.write(sketch + \" \" + listener + \" \"); //variator";
+    injectedDraw [0] = "if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}";
+
 
     //-----------------//
     for (int q=0; q<inputSketch.length; q++) {
@@ -274,7 +277,7 @@ class Main {
   void run_sketch(int counter) {
     String path = "";
     for (int f = 0; f < counter; f++) {
-      path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/evolving_1_0/variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3);
+      path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3);
       if (counter == -1) {
         println("nothing to run");
       } else {
@@ -284,8 +287,8 @@ class Main {
     println(nf(popCounter, 3));
   }
 
-    //----------> (extra) SKETCH SIZE INFORMATION
-  
+  //----------> (extra) SKETCH SIZE INFORMATION
+
   int [] getSketchSize() {
 
     int [] sketchSize = new int [2];
@@ -312,7 +315,7 @@ class Main {
   }
 
   //----------> (extra) POPULATIONS GRID DISPLAY
-  
+
   void set_grid() {
 
     if (counterGridX == 3) {

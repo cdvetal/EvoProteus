@@ -6,6 +6,7 @@
  * rings for each target.
  */
 
+boolean __bg= true; //min:0 max:1
 float __h= 200; //min:0 max:360
 float __s = 40; //min:0 max:100
 float __b = 80; //min:0 max:100
@@ -20,8 +21,11 @@ float __size= 100; //min:20 max:200
 
 void setup() {
   size(300, 200);
+
+  if (__bg)   background(0);
+  if (__bg ==false) background(255);
+
   colorMode(HSB, 360, 100, 100);
-  background(0);
   noStroke();
 
 

@@ -4,8 +4,12 @@ import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map;
 
-ArrayList <Server> servers = new ArrayList<Server>(); //--> ArrayList of Servers for each individual
 Client v_m;
+ArrayList <Server> servers = new ArrayList<Server>(); //--> ArrayList of Servers for each individual;
+serverListener s = new serverListener();
+String exitSketch = "1";
+
+File selection;
 
 int [] orgSize = new int[2];
 int sketchW, sketchH;
@@ -15,13 +19,11 @@ String original [] = {"/n"};
 String path = "/n";
 String orgPath = "/n";
 
-File selection;
 
 int counter=0; // --> global variable for variations & servers labelling
 int popCounter = -1;
 
 Main m = new Main();
-serverListener s = new serverListener();
 Button [] b  = new  Button [4]; // --> Array of button objects
 
 PFont font;
@@ -31,8 +33,10 @@ String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.ttf";
 float btn_height = 420; // --> Firts button y-pos on screen
 String [] btn_txt = new String [4];
 
+
+Population pop;
 //--> Operators
-int populationSize = 8;
+int populationSize = 9;
 float mutationRate;
 
 HashMap<String, Integer> window = new HashMap<String, Integer>();
@@ -60,7 +64,10 @@ void setup() {
 
   // --> .pde skecthes extraction
   selectInput("Select a file to process:", "fileSelected");
+
+  pop = new Population();
 }
+
 
 void draw() {
 
@@ -71,6 +78,7 @@ void draw() {
 
   s.listenStatus();
   s.serverPrint();
+  s.serverShutdown();
 }
 
 void mousePressed() {
@@ -85,31 +93,16 @@ void mousePressed() {
         //-----------------//
       } else if (g == 1) {  // --> CREATE INITIAL POPULATION
         popCounter ++;
-        int iteration [] = new int [populationSize];
-        for (int v : iteration) {
-          servers.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
-          m.manipulator();  // --> input values to random values between established boundaries
-          m.set_grid();
-          m.injectorA(counter); // --> Client-Server injection code entries
-          m.injectorB(); // --> vartiated values injection
-          m.modifiedSketch(counter); // --> modified sketch exportation gathering all changes
-          counter++;
-          //-----------------//
-          //m.concatenator(file_1, file_2); // --> Necessary to return to org sketch each iteration
-          inputSketch=original;
-        }
-        titleElements(font, SGrotesk_Regular, 14, "Gen."+ popCounter + "  Pop. Size " + populationSize, 85);
+        pop.initialize();
+        titleElements(font, SGrotesk_Regular, 14, "Gen." + popCounter + "  Pop. Size. " + populationSize, 85);
         //-----------------//
       } else if (g==2) {  // --> RUN CURRENT GENERATION
-        m.run_sketch(counter); // --> Execute modified sketches in separate windows
+        pop.renderPop();
       } else if (g==3) {  // --> NEXT GENERATION
 
-        background(255);
-        titleElements(font, SGrotesk_SemiBold, 24, "Variator", 35);
-        titleElements(font, SGrotesk_Regular, 14, "Evolving 1.0", 60);
-        elements(font, SGrotesk_SemiBold, 14, "Fittest candidates:", width/2, 120);
-        titleElements(font, SGrotesk_Regular, 14, "Gen."+ popCounter + "  Pop. Size " + populationSize, 85);
-
+        exitSketch = "2";
+        pop.evolve();
+        elements(font, SGrotesk_SemiBold, 14, "Fitness:", width/2, 120);
         c=0;
 
         for (Map.Entry me : window.entrySet()) {
@@ -119,10 +112,14 @@ void mousePressed() {
             c += 1;
           }
         }
+        /*----------------------*/
       }
     }
   }
 }
+
+/*------------------------------------------MINOR UTILITIES----------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------------*/
 
 // --> Title elements function
 
@@ -153,10 +150,13 @@ void fileSelected(File selection) {
     inputSketch = original;
     path = selection.getAbsolutePath();
     orgPath = selection.getAbsolutePath();
-    m.extractor(); // --> parameter extraction
     orgSize = m.getSketchSize();
     sketchW = orgSize[0];
     sketchH = orgSize[1];
     //println("User selected " + path);
   }
+}
+
+void serverOpen() {
+  servers.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
 }
