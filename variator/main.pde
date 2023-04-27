@@ -1,19 +1,6 @@
 class Main {
 
-  // --> ArrayList of objects
-  ArrayList<Parameters> parameters = new ArrayList<Parameters>();
-  ArrayList<pamRefined> pamRefined = new ArrayList<pamRefined>();
-
-  IntList sketchLine = new IntList();
-  IntList sketchLineRefined = new IntList();
-
-  // --> note: the refined lists/arrays are created for outlier removal purposes;
-
   StringList labeledIndex = new StringList(); // --> String to store all labeled indexes
-
-  //-----------------//
-
-  String primitivesList [] = {"String", "float", "int", "char", "boolean"}; // --> Listing primitive data types
 
   //-----------------//
 
@@ -33,7 +20,6 @@ class Main {
   String type, name, value, limits, min_value, max_value;
 
   int gridX = 0, gridY =0 ;
-  int counterGridX = 0, counterGridY=0;
 
   /*------------------------------------------PARAMETER EXTRACTION FUNCTION--------------------------------------------------------*/
   /*-------------------------------------------------------------------------------------------------------------------------------*/
@@ -120,6 +106,8 @@ class Main {
   void manipulator () {
 
     StringList variableType = new StringList(); // --> StringList to help identify Datatype primitive
+    genotype.add(new Genotype());
+    genCounter ++;
 
     for (int d = 0; d<pamRefined.size(); d++) {
 
@@ -153,6 +141,8 @@ class Main {
         min_value = "undefined"; // --> No boundaries, no fun.
         max_value = "undefined"; // --> :(
       }
+
+      genotype.get(genCounter).arrange(d + pamRefined.get(d).type, pamRefined.get(d).value, min_value, max_value);
     }
   }
 
@@ -162,34 +152,13 @@ class Main {
   void injectorA (int counter) {
 
     // --> Client-Server injection code entries
-    String injectedSetup [] = new String [5];
-    String injectedBegin [] = new String [9];
-    String injectedDraw  [] = new String [6];
+    String injectedSetup [] = new String [1];
+    String injectedBegin [] = new String [1];
+    String injectedDraw  [] = new String [1];
 
-
-    injectedBegin [8] = "import processing.net.*; //variator";
-    injectedBegin [7] = "import processing.awt.PSurfaceAWT; //variator";
-    injectedBegin [6] = "PSurfaceAWT.SmoothCanvas smoothCanvas; //variator";
-    injectedBegin [5] = "Client v_m; //variator";
-    injectedBegin [4] = "int listener = 0; //variator";
-    injectedBegin [3] = "void exit() { windowOpen = false; thread(\"exitDelay\");}";
-    injectedBegin [2] = "boolean windowOpen = true;";
-    injectedBegin [1] = "void exitDelay(){delay(1500); System.exit(0);}";
-    injectedBegin [0] = "String input; int exitValue;";
-
-    injectedSetup [4] = "surface.setLocation("+ gridX + ","+ gridY+"); //variator";
-    injectedSetup [3] = "PSurfaceAWT awtSurface = (PSurfaceAWT)surface; //variator";
-    injectedSetup [2] = "smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative(); //variator";
-    injectedSetup [1] = "println(\"[Client] Client connected\"); //variator";
-    injectedSetup [0] = "v_m = new Client(this, \"localhost\", 3000 + " + counter + "); //variator";
-
-    injectedDraw [5] = "final String sketch = getClass().getName();//variator";
-    injectedDraw [4] = "java.awt.Point p = new java.awt.Point();//variator";
-    injectedDraw [3] = "smoothCanvas.getFrame().getLocation(p);//variator";
-    injectedDraw [2] = "if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;} //variator";
-    injectedDraw [1] = "v_m.write(sketch + \" \" + listener + \" \"); //variator";
-    injectedDraw [0] = "if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}";
-
+    injectedBegin [0] = "import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client v_m;int listener = 0;void exit() { windowOpen = false; thread(\"exitDelay\");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line";
+    injectedSetup [0] = "surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");v_m = new Client(this, \"localhost\", 3000 + " + counter + ");//variator";
+    injectedDraw  [0] = "final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}v_m.write(sketch + \" \" + listener + \" \");if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator";
 
     //-----------------//
     for (int q=0; q<inputSketch.length; q++) {
@@ -213,7 +182,9 @@ class Main {
         }
       }
     }
+
     //-----------------//
+
     int last_ix = inputSketch.length; // --> Finding last line in input sketch (simpler for declarations and libraries injection)
 
     for (int p = 0; p<injectedBegin.length; p++) {
@@ -226,7 +197,8 @@ class Main {
 
   //----------> (7) MANIPULATED VALUES INJECTION
 
-  void injectorB () {
+  void injectorB (String [] values) {
+
 
     String a, b, c;
     int ixInjectValues; // --> Stores each sketchLine to be variated
@@ -247,7 +219,7 @@ class Main {
       b = inputSketch[ixInjectValues].substring(ix_at+1, ix_cl);
       c = inputSketch[ixInjectValues].substring(ix_cl, inputSketch[ixInjectValues].length());
 
-      b = pamRefined.get(t).value;
+      b = values[t]; // --> pamRefined
 
       String modified = a + b + c ;
 
@@ -255,12 +227,13 @@ class Main {
     }
   }
 
+
   /*------------------------------------------SAVE MODIFIED CODE FUNCTION-------------------------------------------------------------------*/
   /*----------------------------------------------------------------------------------------------------------------------------------------*/
 
   //----------> (8) MODIFIED SKETCHES WITH PREVIOUS INJECTIONS EXPORTATIONS
 
-  void modifiedSketch(int counter) {
+  void popExport(int counter) {
     println("indiv " + nf(counter, 3) + " from population " + nf(popCounter, 3) + " exported.");
 
     for (int s = 0; s<inputSketch.length; s++) {
@@ -274,17 +247,18 @@ class Main {
 
   //----------> (9) MODIFIED SKETCHES EXECUTION ON SEPARATE WINDOWS
 
-  void run_sketch(int counter) {
+  void runSketch(int counter) {
     String path = "";
     for (int f = 0; f < counter; f++) {
       path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3);
+      //println(path);
       if (counter == -1) {
         println("nothing to run");
       } else {
         exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
       }
     }
-    println(nf(popCounter, 3));
+    //println(nf(popCounter, 3));
   }
 
   //----------> (extra) SKETCH SIZE INFORMATION
@@ -316,7 +290,7 @@ class Main {
 
   //----------> (extra) POPULATIONS GRID DISPLAY
 
-  void set_grid() {
+  void setGrid() {
 
     if (counterGridX == 3) {
       counterGridX = 0;
@@ -324,7 +298,7 @@ class Main {
     }
 
     gridX = (sketchW * counterGridX) + (23 * (counterGridX + 1));
-    gridY = (sketchH * counterGridY) + 46 * (counterGridY + 1);
+    gridY = (sketchH * counterGridY) +  46 * (counterGridY + 1);
 
     counterGridX +=1;
   }

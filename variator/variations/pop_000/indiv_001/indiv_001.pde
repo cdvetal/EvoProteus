@@ -7,24 +7,20 @@
  */
 
 boolean __bg=false; //min:0 max:1
-float __h=207.67241; //min:0 max:360
-float __s =48.78253; //min:0 max:100
-float __b =38.130993; //min:0 max:100
-float __op =78.72347; //min:0 max:100
+float __h=8.006351; //min:0 max:360
+float __s =79.64006; //min:0 max:100
+float __b =69.58358; //min:0 max:100
+float __op =99.792; //min:0 max:100
 
 int __num_circles=4; //min:1 max:6
 int __num_min=4; //min:2 max:10
-int __num_max=11; //min:10 max:30
+int __num_max=29; //min:10 max:30
 
-float __pos=0.13706504; //min:0.1 max:0.4
-float __size=191.50212; //min:20 max:200
+float __pos=0.25834277; //min:0.1 max:0.4
+float __size=104.53269; //min:20 max:200
 
 void setup() {
-surface.setLocation(346,46); //variator
-PSurfaceAWT awtSurface = (PSurfaceAWT)surface; //variator
-smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative(); //variator
-println("[Client] Client connected"); //variator
-v_m = new Client(this, "localhost", 3000 + 1); //variator
+surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 1);//variator
   size(300, 200);
 
   if (__bg)   background(0);
@@ -40,12 +36,7 @@ v_m = new Client(this, "localhost", 3000 + 1); //variator
 }
 
 void draw() {
-final String sketch = getClass().getName();//variator
-java.awt.Point p = new java.awt.Point();//variator
-smoothCanvas.getFrame().getLocation(p);//variator
-if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;} //variator
-v_m.write(sketch + " " + listener + " "); //variator
-if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}
+final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}v_m.write(sketch + " " + listener + " ");if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
 }
 
 void drawTarget(float xloc, float yloc, float size, int num) {
@@ -55,12 +46,4 @@ void drawTarget(float xloc, float yloc, float size, int num) {
     ellipse(xloc, yloc, size - i*steps, size - i*steps);
   }
 }
-import processing.net.*; //variator
-import processing.awt.PSurfaceAWT; //variator
-PSurfaceAWT.SmoothCanvas smoothCanvas; //variator
-Client v_m; //variator
-int listener = 0; //variator
-void exit() { windowOpen = false; thread("exitDelay");}
-boolean windowOpen = true;
-void exitDelay(){delay(1500); System.exit(0);}
-String input; int exitValue;
+import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client v_m;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line

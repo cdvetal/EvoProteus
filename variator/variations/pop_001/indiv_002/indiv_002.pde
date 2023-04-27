@@ -6,23 +6,23 @@
  * Multiple-object collision.
  */
 
-int __c1 =2; // min:0 max:255
-int __c2 =88; // min:0 max:255
-int __c3 =128; //min:0 max:255
+int __c1 =230; // min:0 max:255
+int __c2 =118; // min:0 max:255
+int __c3 =94; //min:0 max:255
 
 boolean __teste =true; //min:true max:false
 
 
 
-int __numBalls =11; // min:0 max:25
-int __diameter =29; // min:10 max:80
-float __spring = 0.05;
-float __gravity =0.032048192; // min:0.01 max:0.05
+int __numBalls =19; // min:0 max:25
+int __diameter =59; // min:10 max:80
+float __spring =NaN;
+float __gravity =0.019898329; // min:0.01 max:0.05
 float __friction = -0.9;
 Ball[] balls = new Ball[__numBalls];
 
 void setup() {
-surface.setLocation(23,252);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 3);//variator
+surface.setLocation(949,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 2);//variator
 
   size(440, 160);
 

@@ -2,45 +2,72 @@
 
 import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
-import java.util.Map;
+import java.util.Map; //--> HashMap Library
 
+// --> Typeface
+PFont font;
+String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.ttf";
+String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.ttf";
+
+// --> Server architeture utilities
 Client v_m;
 ArrayList <Server> servers = new ArrayList<Server>(); //--> ArrayList of Servers for each individual;
 serverListener s = new serverListener();
-String exitSketch = "1";
+String exitSketch = "1"; //--> Sent to population for extinguish purposes
+HashMap<String, Integer> windowStatus = new HashMap<String, Integer>();
+int hIncrement= 20;
+
+// --> ArrayList of objects
+ArrayList<Parameters> parameters = new ArrayList<Parameters>(); //--> Set of parameter extracted from first pop.
+ArrayList<pamRefined> pamRefined = new ArrayList<pamRefined>(); //--> Refined set (no outliers)
+
+// --> ArrayList of sketch lines with parameters
+IntList sketchLine = new IntList(); //--> Lines w/ identified parameters
+IntList sketchLineRefined = new IntList(); //--> Refined lines (no outliers)
+
+String primitivesList [] = {"String", "float", "int", "char", "boolean"}; // --> Listing primitive data types
 
 File selection;
 
 int [] orgSize = new int[2];
 int sketchW, sketchH;
 
+// --> Variables to store input sketch information
 String inputSketch [] = {"/n"};
 String original [] = {"/n"};
 String path = "/n";
 String orgPath = "/n";
+Main m = new Main();//--> Initial input information
 
 
-int counter=0; // --> global variable for variations & servers labelling
-int popCounter = -1;
-
-Main m = new Main();
-Button [] b  = new  Button [4]; // --> Array of button objects
-
-PFont font;
-String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.ttf";
-String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.ttf";
-
-float btn_height = 420; // --> Firts button y-pos on screen
-String [] btn_txt = new String [4];
+// --> Buttons
+Button [] b  = new  Button [3]; // --> Array of button objects
+float btn_height = 480; // --> Firts button y-pos on screen
+String [] btn_txt = new String [3];
 
 
+//------------------------------------------------> Genetic engine operators and declarations
 Population pop;
-//--> Operators
-int populationSize = 9;
-float mutationRate;
+int popCounter = 0; // --> counting each generation
 
-HashMap<String, Integer> window = new HashMap<String, Integer>();
-int c= 0;
+//--> Settings
+int populationSize = 2;
+float mutationRate = 0.7;
+float crossoverRate;
+int tournamentSize;
+int eliteSize = 1;
+//--> Settings
+
+ArrayList <Genotype> genotype = new ArrayList<Genotype>();
+int genCounter = -1;
+int numGenes = 0;
+
+int counterGridX = 0, counterGridY=0;
+
+//------------------------------------------------
+
+int counter=0; // --> global variable for population & servers labelling
+int indivCounter=0;
 
 void setup() {
 
@@ -49,13 +76,10 @@ void setup() {
   //pixelDensity(2);
   background(255);
 
-  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.0", 35);
-
   //-----------------//
   btn_txt [0] = "Run my sketch (opcional)";
   btn_txt [1] = "Create population (1)";
-  btn_txt [2] = "Run current generation (2)";
-  btn_txt [3] = "Next generation (3)";
+  btn_txt [2] = "Next generation (2)";
 
   for (int u  = 0; u < b.length; u++) {
     b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> menu buttons init
@@ -71,14 +95,25 @@ void setup() {
 
 void draw() {
 
+  background(255);
+  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.0", 35);
+  titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
+  elements(font, SGrotesk_Regular, 14, "Fitness Score", width/2, 100);
+
   for (Button button : b) {
     button.update(mouseX, mouseY);
     button.create(font, SGrotesk_Regular);
   }
 
+  for (int i = 0; i < populationSize; i++) {
+    String [] fitness = new String [populationSize];
+    fitness [i] = "indiv_"+ nf(i, 3) + " - " + s.serverFitness().get("indiv_"+nf(i,3));
+    titleElements(font, SGrotesk_Regular, 14, fitness [i], 130 + hIncrement*i);
+  }
+
   s.listenStatus();
   s.serverPrint();
-  s.serverShutdown();
+  s.serverFitness();
 }
 
 void mousePressed() {
@@ -88,31 +123,26 @@ void mousePressed() {
     if (b[g].getHover() == true) {
       //-----------------//
       if (g==0) { // --> RUN ORIGINAL SKETCH
-        String str = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/evolving_1_0/input/circles";
+        String str = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/inputs/circles";
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
         //-----------------//
-      } else if (g == 1) {  // --> CREATE INITIAL POPULATION
-        popCounter ++;
+      } else if (g == 1) {  // --> CREATE & RUN INITIAL POPULATION
         pop.initialize();
-        titleElements(font, SGrotesk_Regular, 14, "Gen." + popCounter + "  Pop. Size. " + populationSize, 85);
-        //-----------------//
-      } else if (g==2) {  // --> RUN CURRENT GENERATION
         pop.renderPop();
-      } else if (g==3) {  // --> NEXT GENERATION
-
+        //-----------------//
+      } else if (g==2) {  // --> Evolve
+        delay(1000);
+        /*---------------*/
+        indivCounter=0;
         exitSketch = "2";
+        s.serverShutdown();
+        exitSketch = "1";
+        delay(1000);
+        /*---------------*/
+        counterGridX = 0;
+        counterGridY=0;
         pop.evolve();
-        elements(font, SGrotesk_SemiBold, 14, "Fitness:", width/2, 120);
-        c=0;
-
-        for (Map.Entry me : window.entrySet()) {
-          if (me.getValue().equals(1)) {
-            String object = me.getKey().toString();
-            titleElements(font, SGrotesk_Regular, 14, object, 160 + c*40);
-            c += 1;
-          }
-        }
-        /*----------------------*/
+        pop.renderPop();
       }
     }
   }
@@ -153,10 +183,12 @@ void fileSelected(File selection) {
     orgSize = m.getSketchSize();
     sketchW = orgSize[0];
     sketchH = orgSize[1];
-    //println("User selected " + path);
+    println("User selected " + path);
   }
 }
 
+
 void serverOpen() {
   servers.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
+  //println(servers);
 }

@@ -6,19 +6,19 @@
  * Multiple-object collision.
  */
 
-int __c1 =2; // min:0 max:255
-int __c2 =88; // min:0 max:255
-int __c3 =128; //min:0 max:255
+int __c1 =79; // min:0 max:255
+int __c2 =255; // min:0 max:255
+int __c3 =117; //min:0 max:255
 
 boolean __teste =true; //min:true max:false
 
 
 
-int __numBalls =11; // min:0 max:25
-int __diameter =29; // min:10 max:80
-float __spring = 0.05;
-float __gravity =0.032048192; // min:0.01 max:0.05
-float __friction = -0.9;
+int __numBalls =13; // min:0 max:25
+int __diameter =67; // min:10 max:80
+float __spring =NaN;
+float __gravity =0.03731861; // min:0.01 max:0.05
+float __friction =NaN;
 Ball[] balls = new Ball[__numBalls];
 
 void setup() {

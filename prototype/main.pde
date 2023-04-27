@@ -275,7 +275,7 @@ class Main {
   void run_sketch(int counter) {
     String path = "";
     for (int f = 0; f < counter; f++) {
-      path = "/Users/ricardosacadura/faculdade/5º ano/Tese + Bolsa/04. Prova de conceito/variator/variations/modified_" + nf(f, 3);
+      path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/variations/modified_" + nf(f, 3);
       if (counter == -1) {
         println("nothing to run");
       } else {

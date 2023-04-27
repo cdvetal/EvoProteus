@@ -6,23 +6,22 @@
  * Multiple-object collision.
  */
 
-int __c1 =2; // min:0 max:255
-int __c2 =88; // min:0 max:255
-int __c3 =128; //min:0 max:255
+int __c1 = 250; // min:0 max:255
+int __c2 = 150; // min:0 max:255
+int __c3 = 0; //min:0 max:255
 
-boolean __teste =true; //min:true max:false
+boolean __teste = true; //min:true max:false
 
 
 
-int __numBalls =11; // min:0 max:25
-int __diameter =29; // min:10 max:80
+int __numBalls = 12; // min:0 max:25
+int __diameter = 30; // min:10 max:80
 float __spring = 0.05;
-float __gravity =0.032048192; // min:0.01 max:0.05
+float __gravity = 0.03; // min:0.01 max:0.05
 float __friction = -0.9;
 Ball[] balls = new Ball[__numBalls];
 
 void setup() {
-surface.setLocation(23,252);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 3);//variator
 
   size(440, 160);
 
@@ -34,7 +33,6 @@ surface.setLocation(23,252);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smooth
 }
 
 void draw() {
-final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}v_m.write(sketch + " " + listener + " ");if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
   background(__c2, __c3, __c1);
   for (Ball ball : balls) {
     ball.collide();
@@ -104,4 +102,3 @@ class Ball {
     ellipse(x, y, diameter, diameter);
   }
 }
-import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client v_m;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line
