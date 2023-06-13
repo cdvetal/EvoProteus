@@ -6,18 +6,18 @@
  * rings for each target.
  */
 
-boolean __bg=false; //min:0 max:1
-float __h=8.006351; //min:0 max:360
-float __s =79.64006; //min:0 max:100
-float __b =69.58358; //min:0 max:100
-float __op =99.792; //min:0 max:100
+boolean __bg=true; //min:0 max:1
+float __h=242.96292; //min:0 max:360
+float __s =90.61745; //min:0 max:100
+float __b =58.553143; //min:0 max:100
+float __op =28.8956; //min:0 max:100
 
-int __num_circles=4; //min:1 max:6
+int __num_circles=3; //min:1 max:6
 int __num_min=4; //min:2 max:10
-int __num_max=29; //min:10 max:30
+int __num_max=18; //min:10 max:30
 
-float __pos=0.25834277; //min:0.1 max:0.4
-float __size=104.53269; //min:20 max:200
+float __pos=0.27786934; //min:0.1 max:0.4
+float __size=171.96886; //min:20 max:200
 
 void setup() {
 surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 1);//variator

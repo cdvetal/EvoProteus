@@ -7,20 +7,20 @@
  */
 
 boolean __bg=true; //min:0 max:1
-float __h=269.59604; //min:0 max:360
-float __s =9.489336; //min:0 max:100
-float __b =82.5482; //min:0 max:100
-float __op =63.8068; //min:0 max:100
+float __h=174.60667; //min:0 max:360
+float __s =87.91063; //min:0 max:100
+float __b =54.21083; //min:0 max:100
+float __op =25.508734; //min:0 max:100
 
-int __num_circles=2; //min:1 max:6
-int __num_min=8; //min:2 max:10
+int __num_circles=1; //min:1 max:6
+int __num_min=2; //min:2 max:10
 int __num_max=16; //min:10 max:30
 
-float __pos=0.3717961; //min:0.1 max:0.4
-float __size=73.54425; //min:20 max:200
+float __pos=0.26611522; //min:0.1 max:0.4
+float __size=172.2104; //min:20 max:200
 
 void setup() {
-surface.setLocation(346,292);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 4);//variator
+surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 1);//variator
   size(300, 200);
 
   if (__bg)   background(0);

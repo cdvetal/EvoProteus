@@ -51,7 +51,7 @@ Population pop;
 int popCounter = 0; // --> counting each generation
 
 //--> Settings
-int populationSize = 2;
+int populationSize = 3;
 float mutationRate = 0.7;
 float crossoverRate;
 int tournamentSize;
@@ -107,7 +107,7 @@ void draw() {
 
   for (int i = 0; i < populationSize; i++) {
     String [] fitness = new String [populationSize];
-    fitness [i] = "indiv_"+ nf(i, 3) + " - " + s.serverFitness().get("indiv_"+nf(i,3));
+    fitness [i] = "indiv_"+ nf(i, 3) + " - " + s.serverFitness().get("indiv_"+nf(i, 3));
     titleElements(font, SGrotesk_Regular, 14, fitness [i], 130 + hIncrement*i);
   }
 
@@ -133,16 +133,16 @@ void mousePressed() {
       } else if (g==2) {  // --> Evolve
         delay(1000);
         /*---------------*/
-        indivCounter=0;
-        exitSketch = "2";
-        s.serverShutdown();
-        exitSketch = "1";
-        delay(1000);
-        /*---------------*/
         counterGridX = 0;
         counterGridY=0;
         pop.evolve();
         pop.renderPop();
+        /*---------------*/
+        indivCounter=0;
+        exitSketch = "2";
+        s.serverShutdown();
+        exitSketch = "1";
+        //delay(1000);
       }
     }
   }

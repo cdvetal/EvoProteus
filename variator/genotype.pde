@@ -22,22 +22,35 @@ class Genotype {
     String [] keysList = genes.keyArray();
 
     for (int i = 0; i < genes.size(); i++) {
+
       if (random(1) <= mutationRate) {
+
         String keyType = keysList[i].substring(1, keysList[i].length());
         float min = float(genesMin.get(i));
         float max = float(genesMax.get(i));
 
+        float stdDeviation = (max - min) / 20.0; //--> Standard deviation parameter
+
+        float current = float(genes.get(keysList[i]));
+        float newValue = current + randomGaussian() * stdDeviation;
+
         if (keyType.equals(primitivesList[1])) { //--> Mutate floats
-          float n_value = constrain(float(genes.get(keysList[i])) + random(-max/10, max/10), min, max);
-          genes.set(keysList[i], str(n_value));
+          float mutation = constrain(newValue, min, max);
+          genes.set(keysList[i], str(mutation));
+          println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          println("");
           //-----------------//
         } else if (keyType.equals(primitivesList[2])) { //--> Mutate ints
-          int n_value = int(constrain(float(genes.get(keysList[i])) + random(-max/10, max/10), min, max));
-          genes.set(keysList[i], str(n_value));
+          int mutation = int(constrain(newValue, min, max));
+          genes.set(keysList[i], str(mutation));
+          println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          println("");
           //-----------------//
         } else if (keyType.equals(primitivesList[4])) { //--> Mutate booleans
-          boolean n_value =   random(2) > 1;
-          genes.set(keysList[i], str(n_value));
+          boolean mutation =   random(2) > 1;
+          genes.set(keysList[i], str(mutation));
+          println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          println("");
           //-----------------//
         }
       }

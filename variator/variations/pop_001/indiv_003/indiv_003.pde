@@ -1,107 +1,49 @@
-
 /**
- * Bouncy Bubbles
- * based on code from Keith Peters.
+ * Functions.
  *
- * Multiple-object collision.
+ * The drawTarget() function makes it easy to draw many distinct targets.
+ * Each call to drawTarget() specifies the position, size, and number of
+ * rings for each target.
  */
 
-int __c1 =79; // min:0 max:255
-int __c2 =247; // min:0 max:255
-int __c3 =135; //min:0 max:255
+boolean __bg=true; //min:0 max:1
+float __h=50.620235; //min:0 max:360
+float __s =66.87293; //min:0 max:100
+float __b =52.178455; //min:0 max:100
+float __op =90.52386; //min:0 max:100
 
-boolean __teste =true; //min:true max:false
+int __num_circles=5; //min:1 max:6
+int __num_min=9; //min:2 max:10
+int __num_max=14; //min:10 max:30
 
-
-
-int __numBalls =16; // min:0 max:25
-int __diameter =69; // min:10 max:80
-float __spring =NaN;
-float __gravity =0.03731861; // min:0.01 max:0.05
-float __friction =NaN;
-Ball[] balls = new Ball[__numBalls];
+float __pos=0.37922877; //min:0.1 max:0.4
+float __size=24.074425; //min:20 max:200
 
 void setup() {
-surface.setLocation(23,252);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 3);//variator
+surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");v_m = new Client(this, "localhost", 3000 + 3);//variator
+  size(300, 200);
 
-  size(440, 160);
+  if (__bg)   background(0);
+  if (__bg ==false) background(255);
 
-  for (int i = 0; i < __numBalls; i++) {
-    balls[i] = new Ball(random(width), random(height), __diameter, i, balls);
-  }
+  colorMode(HSB, 360, 100, 100);
   noStroke();
-  fill(__c1, __c2, __c3);
+
+
+  for (int i = 0; i < __num_circles; i++) {
+    drawTarget(width * __pos * i, height * random(1), __size, int(random(__num_min, __num_max)));
+  }
 }
 
 void draw() {
 final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}v_m.write(sketch + " " + listener + " ");if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
-  background(__c2, __c3, __c1);
-  for (Ball ball : balls) {
-    ball.collide();
-    ball.move();
-    ball.display();
-  }
 }
 
-class Ball {
-
-  float x, y;
-  float diameter;
-  float vx = 0;
-  float vy = 0;
-  int id;
-  Ball[] others;
-
-  Ball(float xin, float yin, float din, int idin, Ball[] oin) {
-    x = xin;
-    y = yin;
-    diameter = din;
-    id = idin;
-    others = oin;
-  }
-
-  void collide() {
-    for (int i = id + 1; i < __numBalls; i++) {
-      float dx = others[i].x - x;
-      float dy = others[i].y - y;
-      float distance = sqrt(dx*dx + dy*dy);
-      float minDist = others[i].diameter/2 + diameter/2;
-      if (distance < minDist) {
-        float angle = atan2(dy, dx);
-        float targetX = x + cos(angle) * minDist;
-        float targetY = y + sin(angle) * minDist;
-        float ax = (targetX - others[i].x) * __spring;
-        float ay = (targetY - others[i].y) * __spring;
-        vx -= ax;
-        vy -= ay;
-        others[i].vx += ax;
-        others[i].vy += ay;
-      }
-    }
-  }
-
-  void move() {
-    vy += __gravity;
-    x += vx;
-    y += vy;
-    if (x + diameter/2 > width) {
-      x = width - diameter/2;
-      vx *= __friction;
-    } else if (x - diameter/2 < 0) {
-      x = diameter/2;
-      vx *= __friction;
-    }
-    if (y + diameter/2 > height) {
-      y = height - diameter/2;
-      vy *= __friction;
-    } else if (y - diameter/2 < 0) {
-      y = diameter/2;
-      vy *= __friction;
-    }
-  }
-
-  void display() {
-    ellipse(x, y, diameter, diameter);
+void drawTarget(float xloc, float yloc, float size, int num) {
+  float steps = size/num;
+  for (int i = 0; i < num; i++) {
+    fill(__h+(5*i), __s+(5*i), __b+(5*i), __op);
+    ellipse(xloc, yloc, size - i*steps, size - i*steps);
   }
 }
 import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client v_m;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line
