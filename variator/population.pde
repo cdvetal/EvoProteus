@@ -1,7 +1,7 @@
 class Population {
 
   Main m;
-  Genotype [] parent;
+  Genotype [] ancestors;
 
 
   Population() {
@@ -11,7 +11,7 @@ class Population {
   void initialize() { //--> Generates initial population
 
     m.extractor(); // --> parameter extraction
-    parent = new Genotype[populationSize];
+    ancestors = new Genotype[populationSize];
 
     for (int i = 0; i < populationSize; i++) {
 
@@ -31,7 +31,7 @@ class Population {
     }
 
     for (int i = 0; i < populationSize; i++) {
-      parent[i]=genotype.get(i);
+      ancestors[i]=genotype.get(i);
     }
   }
 
@@ -39,24 +39,35 @@ class Population {
 
     Genotype [] newGeneration = new Genotype[genotype.size()]; //--> (Note) Genotype is an extraction of the genetic code of each initial individual
 
+    //--> Copy elite
     for (int i = 0; i < eliteSize; i++) {
-      newGeneration[i] = parent[i];
+      newGeneration[i] = ancestors[i];
     }
 
-    // Initiate new generation
+    //--> Create new generation with crossover operator
     for (int i = eliteSize; i < populationSize; i++) {
-      newGeneration[i]= parent[i];
+      if (random(1) <= crossoverRate) {
+        
+        Genotype parent1 = tournamentSelection();
+        Genotype parent2 = tournamentSelection();
+        Genotype child = parent1.onePointCrossover(parent2);
+        newGeneration[i] = child;
+      } else {
+        newGeneration[i] = tournamentSelection().getCopy();
+      }
+
       //println("Population 0, " + "Individual "+i+" :" + genotype.get(i).genes);
     }
 
     // Mutate new individuals
     for (int i = eliteSize; i < populationSize; i++) {
+      //newGeneration[i] = ancestors[i];
       newGeneration[i].mutate();
       //println("Population 1, " + "Individual "+i+" :" + newGeneration[i].genes);
     }
 
     for (int i = 0; i < populationSize; i++) {
-      parent[i] = newGeneration[i];
+      ancestors[i] = newGeneration[i];
     }
 
     popCounter++;
@@ -67,7 +78,7 @@ class Population {
 
       m.setGrid();//--> Display population on-screen
       m.injectorA(indivCounter);
-      m.injectorB(parent[i].genes.valueArray());
+      m.injectorB(ancestors[i].genes.valueArray());
       //println(newGeneration[i].genes.valueArray());
 
       m.popExport(indivCounter);
@@ -76,6 +87,30 @@ class Population {
       counter++;
       inputSketch=original; //--> Reset injection A (avoid overwride)
     }
+  }
+
+  //--> Select one individual using a tournament selection
+  //algum tem maior 1
+  Genotype tournamentSelection() {
+    // Select a random set of individuals from the population
+    Genotype[] tournament = new Genotype[tournamentSize];
+    for (int i = 0; i < tournament.length; i++) {
+      int random_index = int(random(0, ancestors.length));
+      tournament[i] = ancestors[random_index];
+    }
+    // Get the fittest individual from the selected individuals
+    Genotype fittest = tournament[0];
+    for (int i = 1; i < tournament.length; i++) {
+      if (tournament[i].getFitness() > fittest.getFitness()) {
+        fittest = tournament[i];
+      }
+    }
+    return fittest;
+  }
+
+  // Get an individual from the population located at the given index
+  Genotype getIndiv(int index) {
+    return ancestors[index];
   }
 
   void renderPop() {

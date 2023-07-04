@@ -16,9 +16,9 @@ boolean __teste = true; //min:true max:false
 
 int __numBalls = 12; // min:0 max:25
 int __diameter = 30; // min:10 max:80
-float __spring = 0.05;
+float spring = 0.05;
 float __gravity = 0.03; // min:0.01 max:0.05
-float __friction = -0.9;
+float friction = -0.9;
 Ball[] balls = new Ball[__numBalls];
 
 void setup() {
@@ -68,8 +68,8 @@ class Ball {
         float angle = atan2(dy, dx);
         float targetX = x + cos(angle) * minDist;
         float targetY = y + sin(angle) * minDist;
-        float ax = (targetX - others[i].x) * __spring;
-        float ay = (targetY - others[i].y) * __spring;
+        float ax = (targetX - others[i].x) * spring;
+        float ay = (targetY - others[i].y) * spring;
         vx -= ax;
         vy -= ay;
         others[i].vx += ax;
@@ -84,17 +84,17 @@ class Ball {
     y += vy;
     if (x + diameter/2 > width) {
       x = width - diameter/2;
-      vx *= __friction;
+      vx *= friction;
     } else if (x - diameter/2 < 0) {
       x = diameter/2;
-      vx *= __friction;
+      vx *= friction;
     }
     if (y + diameter/2 > height) {
       y = height - diameter/2;
-      vy *= __friction;
+      vy *= friction;
     } else if (y - diameter/2 < 0) {
       y = diameter/2;
-      vy *= __friction;
+      vy *= friction;
     }
   }
 

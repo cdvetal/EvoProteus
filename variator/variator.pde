@@ -1,4 +1,4 @@
-// "Towards Automated Generative Design", Evolving 1.0 - user-guided fitness assignment + mutation operator, Ricardo Sacadura
+// "Towards Automated Generative Design", Evolving 1.2 - user-guided fitness assignment + genetic operators, Ricardo Sacadura
 
 import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
@@ -6,8 +6,12 @@ import java.util.Map; //--> HashMap Library
 
 // --> Typeface
 PFont font;
-String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.ttf";
-String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.ttf";
+String[] fontList = PFont.list();
+//String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.otf"; //--> This creates unecessary tmp. files
+//String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.otf";  //--> This creates unecessary tmp. files
+
+String SGrotesk_SemiBold = fontList[2582];
+String SGrotesk_Regular  = fontList[2581];
 
 // --> Server architeture utilities
 Client v_m;
@@ -51,10 +55,10 @@ Population pop;
 int popCounter = 0; // --> counting each generation
 
 //--> Settings
-int populationSize = 3;
-float mutationRate = 0.7;
-float crossoverRate;
-int tournamentSize;
+int populationSize = 6;
+float mutationRate = 0.3;
+float crossoverRate = 0.7;
+int tournamentSize = 3;
 int eliteSize = 1;
 //--> Settings
 
@@ -96,7 +100,7 @@ void setup() {
 void draw() {
 
   background(255);
-  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.0", 35);
+  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.2", 35);
   titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
   elements(font, SGrotesk_Regular, 14, "Fitness Score", width/2, 100);
 
@@ -106,9 +110,17 @@ void draw() {
   }
 
   for (int i = 0; i < populationSize; i++) {
-    String [] fitness = new String [populationSize];
-    fitness [i] = "indiv_"+ nf(i, 3) + " - " + s.serverFitness().get("indiv_"+nf(i, 3));
-    titleElements(font, SGrotesk_Regular, 14, fitness [i], 130 + hIncrement*i);
+
+    String [] screenFitness = new String [populationSize];
+    String rawFitness = s.serverFitness().get("indiv_"+nf(i, 3));
+
+    screenFitness [i] = "indiv_"+ nf(i, 3) + " - " + rawFitness;
+    titleElements(font, SGrotesk_Regular, 14, screenFitness [i], 130 + hIncrement*i);
+
+    if (rawFitness != null) {
+      float fitness = float(rawFitness);
+      pop.getIndiv(i).setFitness(fitness);
+    }
   }
 
   s.listenStatus();
@@ -116,7 +128,7 @@ void draw() {
   s.serverFitness();
 }
 
-void mousePressed() {
+void mouseReleased() {
 
   for (int g  = 0; g < b.length; g++) {
 
