@@ -1,15 +1,13 @@
-// "Towards Automated Generative Design", Evolving 1.2 - user-guided fitness assignment + genetic operators, Ricardo Sacadura
+// "Towards Automated Generative Design", Evolving 1.2 - user-guided fitness assignment + genetic operators
+// Ricardo Sacadura, Master Degree in Design and Multimedia, 2023
 
 import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map; //--> HashMap Library
 
-// --> Typeface
+// --> Interface typeface
 PFont font;
 String[] fontList = PFont.list();
-//String SGrotesk_SemiBold = "data/SpaceGrotesk-SemiBold.otf"; //--> This creates unecessary tmp. files
-//String SGrotesk_Regular  = "data/SpaceGrotesk-Regular.otf";  //--> This creates unecessary tmp. files
-
 String SGrotesk_SemiBold = fontList[2582];
 String SGrotesk_Regular  = fontList[2581];
 
@@ -50,17 +48,17 @@ float btn_height = 480; // --> Firts button y-pos on screen
 String [] btn_txt = new String [3];
 
 
-//------------------------------------------------> Genetic engine operators and declarations
+//------------------------------------------------> !GENETIC OPERATORS!
 Population pop;
 int popCounter = 0; // --> counting each generation
 
-//--> Settings
-int populationSize = 6;
+//--> Parametrization
+int populationSize = 3;
 float mutationRate = 0.3;
 float crossoverRate = 0.7;
 int tournamentSize = 3;
 int eliteSize = 1;
-//--> Settings
+//--> Parametrization
 
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
 int genCounter = -1;
@@ -77,7 +75,6 @@ void setup() {
 
   size(300, 650);
   surface.setLocation(displayWidth - (displayWidth/4), displayHeight/7);
-  //pixelDensity(2);
   background(255);
 
   //-----------------//
@@ -100,6 +97,7 @@ void setup() {
 void draw() {
 
   background(255);
+
   titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.2", 35);
   titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
   elements(font, SGrotesk_Regular, 14, "Fitness Score", width/2, 100);
@@ -124,7 +122,7 @@ void draw() {
   }
 
   s.listenStatus();
-  s.serverPrint();
+  //s.serverPrint();
   s.serverFitness();
 }
 
@@ -135,18 +133,20 @@ void mouseReleased() {
     if (b[g].getHover() == true) {
       //-----------------//
       if (g==0) { // --> RUN ORIGINAL SKETCH
-        String str = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/inputs/circles";
+        int tabIndex = matcher(path, "/");
+        String str = path.substring(0, tabIndex);
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
         //-----------------//
       } else if (g == 1) {  // --> CREATE & RUN INITIAL POPULATION
         pop.initialize();
         pop.renderPop();
+        indivCounter=0;
         //-----------------//
-      } else if (g==2) {  // --> Evolve
+      } else if (g==2) {  // --> EVOLVE
         delay(1000);
         /*---------------*/
         counterGridX = 0;
-        counterGridY=0;
+        counterGridY = 0;
         pop.evolve();
         pop.renderPop();
         /*---------------*/
@@ -154,7 +154,6 @@ void mouseReleased() {
         exitSketch = "2";
         s.serverShutdown();
         exitSketch = "1";
-        //delay(1000);
       }
     }
   }
@@ -175,13 +174,26 @@ void titleElements (PFont title, String font_path, int size, String text, float 
 }
 
 void elements (PFont title, String font_path, int size, String text, float xPos, float yPos) {
-
   title = createFont(font_path, 100);
   fill(0);
   textAlign(CENTER);
   textFont(title);
   textSize(size);
   text(text, xPos, yPos);
+}
+
+// -->  Method detecting x char occurrences on a string
+int matcher(String in, String find) {
+  int index = 0;
+  int last = -1;
+  while (index != -1) {
+    index = in.indexOf(find, last+1);
+    if ( index != -1 ) {
+      println(index);
+      last = index;
+    }
+  }
+  return last;
 }
 
 void fileSelected(File selection) {
@@ -198,7 +210,6 @@ void fileSelected(File selection) {
     println("User selected " + path);
   }
 }
-
 
 void serverOpen() {
   servers.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration

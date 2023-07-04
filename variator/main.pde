@@ -250,7 +250,7 @@ class Main {
   void runSketch(int counter) {
     String path = "";
     for (int f = 0; f < counter; f++) {
-      path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator/variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3);
+      path = sketchPath("variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3));
       //println(path);
       if (counter == -1) {
         println("nothing to run");

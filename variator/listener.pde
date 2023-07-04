@@ -38,11 +38,11 @@ class serverListener {
     return info;
   }
 
-  void serverPrint() { //--> Print fitness score
+  /*void serverPrint() { //--> Print fitness score
     for (Map.Entry me : windowStatus.entrySet()) {
       //println(me.getKey() + " is " + me.getValue());
     }
-  }
+  }*/
 
   void serverShutdown () { //--> Kill population
     for (int i = 0; i < servers.size(); i++) {

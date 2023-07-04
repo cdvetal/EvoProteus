@@ -47,7 +47,7 @@ class Population {
     //--> Create new generation with crossover operator
     for (int i = eliteSize; i < populationSize; i++) {
       if (random(1) <= crossoverRate) {
-        
+
         Genotype parent1 = tournamentSelection();
         Genotype parent2 = tournamentSelection();
         Genotype child = parent1.onePointCrossover(parent2);
@@ -61,7 +61,6 @@ class Population {
 
     // Mutate new individuals
     for (int i = eliteSize; i < populationSize; i++) {
-      //newGeneration[i] = ancestors[i];
       newGeneration[i].mutate();
       //println("Population 1, " + "Individual "+i+" :" + newGeneration[i].genes);
     }
@@ -90,7 +89,6 @@ class Population {
   }
 
   //--> Select one individual using a tournament selection
-  //algum tem maior 1
   Genotype tournamentSelection() {
     // Select a random set of individuals from the population
     Genotype[] tournament = new Genotype[tournamentSize];
