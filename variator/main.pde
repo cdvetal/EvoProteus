@@ -256,6 +256,7 @@ class Main {
         println("nothing to run");
       } else {
         exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
+        //delay(500);
       }
     }
     //println(nf(popCounter, 3));

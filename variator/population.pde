@@ -1,3 +1,5 @@
+import java.util.*; //--> Needed to sort arrays
+
 class Population {
 
   Main m;
@@ -38,6 +40,9 @@ class Population {
   void evolve() {
 
     Genotype [] newGeneration = new Genotype[genotype.size()]; //--> (Note) Genotype is an extraction of the genetic code of each initial individual
+
+    // Sort individuals by fitness
+    sortByFitness();
 
     //--> Copy elite
     for (int i = 0; i < eliteSize; i++) {
@@ -106,13 +111,22 @@ class Population {
     return fittest;
   }
 
+  void sortByFitness () {
+    Arrays.sort(ancestors, new Comparator<Genotype>() {
+      public int compare(Genotype indiv1, Genotype indiv2) {
+        return Float.compare(indiv2.getFitness(), indiv1.getFitness());
+      }
+    }
+    );
+  }
+
   // Get an individual from the population located at the given index
   Genotype getIndiv(int index) {
     return ancestors[index];
   }
 
   void renderPop() {
-    m.runSketch(counter); // --> Execute modified sketches in separate windows
+    m.runSketch(indivCounter); // --> Execute modified sketches in separate windows
   }
 
   int getGenerations() {

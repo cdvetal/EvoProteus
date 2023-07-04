@@ -53,7 +53,7 @@ Population pop;
 int popCounter = 0; // --> counting each generation
 
 //--> Parametrization
-int populationSize = 3;
+int populationSize = 6;
 float mutationRate = 0.3;
 float crossoverRate = 0.7;
 int tournamentSize = 3;
