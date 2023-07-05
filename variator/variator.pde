@@ -53,7 +53,7 @@ Population pop;
 int popCounter = 0; // --> counting each generation
 
 //--> Parametrization
-int populationSize = 6;
+int populationSize = 4;
 float mutationRate = 0.3;
 float crossoverRate = 0.7;
 int tournamentSize = 3;
@@ -75,7 +75,7 @@ void setup() {
 
   size(300, 650);
   surface.setLocation(displayWidth - (displayWidth/4), displayHeight/7);
-  background(255);
+  background(0);
 
   //-----------------//
   btn_txt [0] = "Run my sketch (opcional)";
@@ -96,7 +96,7 @@ void setup() {
 
 void draw() {
 
-  background(255);
+  background(0);
 
   titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.2", 35);
   titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
@@ -140,6 +140,8 @@ void mouseReleased() {
       } else if (g == 1) {  // --> CREATE & RUN INITIAL POPULATION
         pop.initialize();
         pop.renderPop();
+        String path = sketchPath("controls");;
+        exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
         indivCounter=0;
         //-----------------//
       } else if (g==2) {  // --> EVOLVE
@@ -166,7 +168,7 @@ void mouseReleased() {
 
 void titleElements (PFont title, String font_path, int size, String text, float yPos) {
   title = createFont(font_path, 100);
-  fill(0);
+  fill(200);
   textAlign(CENTER);
   textFont(title);
   textSize(size);
@@ -175,7 +177,7 @@ void titleElements (PFont title, String font_path, int size, String text, float 
 
 void elements (PFont title, String font_path, int size, String text, float xPos, float yPos) {
   title = createFont(font_path, 100);
-  fill(0);
+  fill(200);
   textAlign(CENTER);
   textFont(title);
   textSize(size);

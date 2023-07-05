@@ -4,22 +4,23 @@ float __fillProb = 0.3; //min:0.05 max:1
 float __splitProbX = 0.5; //min:0.1 max:0.8
 float __splitProbY = 0.5; //min:0.1 max:0.8
 
+
 void setup() {
-  size(300, 300);
-  //pixelDensity(2);
+  size(200, 200);
   background(255);
-  //colorMode(HSB);
+  colorMode(HSB);
+
   rectangles = new ArrayList<Rectangle>();
-  int x = 30;
-  int y = 30;
-  int w = 240;
-  int h = 240;
-  int step = 240 / 6;
-  
+
+  int x = 15;
+  int y = 15;
+  int w = 170;
+  int h = 170;
+  int step = 170 / 6;
   Rectangle rectStart = new Rectangle(x, y, w, h);
   rectangles.add(rectStart);
 
-  for (int i = 0; i < 240; i += step) {
+  for (int i = 0; i < 170; i += step) {
     splitSquaresWith(new PVector(x + i, y));
     splitSquaresWith(new PVector(x, y + i));
   }
@@ -83,6 +84,12 @@ void splitOnY(Rectangle square, int cy) {
   rectangles.add(squareB);
 }
 
+void keyPressed() {
+  if (key == 's') {
+    save("mondrian.png");
+  }
+}
+
 void draw() {
 }
 
@@ -98,8 +105,7 @@ class Rectangle {
 
   void show() {
     stroke(0);
-    strokeWeight(4);
-
+    strokeWeight(3);
     if (random(1) < __fillProb) {
       int c = int(random(3));
       if (c == 0) fill(#fff001);

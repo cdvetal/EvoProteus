@@ -15,20 +15,20 @@ class Button {
 
   void create(PFont btn_font, String path) {
 
-    stroke(0);
+    stroke(255);
     strokeWeight(0.7);
     if (btnIsHover ==true) {
-      fill(0);
-    } else {
       fill(255);
+    } else {
+      fill(0);
     }
     rectMode(CENTER);
     rect(buttonX, buttonY, buttonW, buttonH);
 
     if (btnIsHover ==true) {
-      fill(255);
-    } else {
       fill(0);
+    } else {
+      fill(200);
     }
 
     btn_font = createFont(path, 100);
