@@ -7,6 +7,7 @@ class serverListener {
 
   String indiv, fScore;
 
+
   void listenStatus() { //--> Listen window status for each individual
     for (int i = 0; i < servers.size(); i++) {
       v_m = servers.get(i).available();
@@ -38,11 +39,23 @@ class serverListener {
     return info;
   }
 
-  /*void serverPrint() { //--> Print fitness score
-    for (Map.Entry me : windowStatus.entrySet()) {
-      //println(me.getKey() + " is " + me.getValue());
+  void listenValues() { //--> Listen control panel values
+
+    v_c = v.available();
+
+    if (v_c != null) {
+      String input = v_c.readString().trim();
+      try {
+        String[] params = input.split(" ");
+        for (int l = 0; l < params.length; l++) {
+          panelValues[l] = params[l];
+          //println(params[l]);
+        }
+      }
+      catch(Exception exc) {
+      }
     }
-  }*/
+  }
 
   void serverShutdown () { //--> Kill population
     for (int i = 0; i < servers.size(); i++) {

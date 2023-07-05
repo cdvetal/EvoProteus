@@ -1,25 +1,36 @@
-/**
- * Scrollbar.
- *
- * Move the scrollbars left and right to change the positions of the images.
- */
+// "Towards Automated Generative Design", Evolving 1.4
+// Parametrization panel segment
+
+import processing.net.*;
+import processing.awt.PSurfaceAWT;
+PSurfaceAWT.SmoothCanvas smoothCanvas;
+
+Client v_c;
+
+String input;
+String operatorValue;
+int exitValue;
 
 PFont font;
 String[] fontList = PFont.list();
 String SGrotesk_Regular  = fontList[2581];
 
-
-//True if a mouse button was pressed while no other button was.
 boolean firstMousePress = false;
-Slider hs2;  // Two scrollbars
+
 Slider [] hs = new Slider [5];
 
 void setup() {
+  
   size(800, 130);
   surface.setLocation(displayWidth/2 - (displayWidth/3), displayHeight/2 + int(displayHeight*0.222));
   surface.setTitle("Parametrization");
-  font = createFont(SGrotesk_Regular, 100);
+  
+  PSurfaceAWT awtSurface = (PSurfaceAWT)surface;
+  smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();
+  
+  v_c = new Client(this, "localhost", 12345);
 
+  font = createFont(SGrotesk_Regular, 100);
   noStroke();
 
   for (int i = 0; i < hs.length; i++) {
@@ -53,6 +64,7 @@ void setup() {
       operator = "Crossover Rate";
       type = false;
     }
+    
     hs[i] = new Slider(40 + (150 * i), height/2, 125, 2, 3, min, max, operator, type);
   }
 }
@@ -60,16 +72,17 @@ void setup() {
 void draw() {
 
   background(0);
-  // Get the position of the img1 scrollbar
-  // and convert to a value to display the img1 image
+
+  java.awt.Point p = new java.awt.Point();
+  smoothCanvas.getFrame().getLocation(p);
 
   for (int j = 0; j < hs.length; j++) {
     hs[j].update();
     hs[j].display();
   }
 
+  v_c.write(hs[0].getOperatorValue() + " " + hs[1].getOperatorValue() + " " + hs[2].getOperatorValue() + " " + hs[3].getOperatorValue() + " " + hs[4].getOperatorValue());
 
-  //After it has been used in the sketch, set it back to false
   if (firstMousePress) {
     firstMousePress = false;
   }
@@ -95,6 +108,7 @@ class Slider {
   String operator;
   boolean type;
 
+  String printValue;
 
   Slider (float xp, float yp, int sw, int sh, int l, float vm, float vM, String op, boolean t) {
     swidth = sw;
@@ -164,20 +178,22 @@ class Slider {
     textAlign(CENTER);
     textFont(font);
     textSize(14);
-    String v;
     if (type) {
-      v = str(int(value));
+      operatorValue = str(int(value));
     } else {
-      v = str(int(value));
-      v = nf(value, 0, 1);
+      operatorValue = str(int(value));
+      operatorValue = nf(value, 0, 1);
     }
+    printValue = operatorValue;
     text(operator, xpos + swidth/2 - sheight/2, ypos + sheight * 16);
-    text(v, spos, ypos - sheight * 12);
+    text(operatorValue, spos, ypos - sheight * 12);
   }
 
   float getPos() {
-    // Convert spos to be values between
-    // 0 and the total width of the scrollbar
     return spos * ratio;
+  }
+
+  String getOperatorValue() {
+    return printValue;
   }
 }

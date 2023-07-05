@@ -1,4 +1,4 @@
-// "Towards Automated Generative Design", Evolving 1.2 - user-guided fitness assignment + genetic operators
+// "Towards Automated Generative Design", Evolving 1.4 - user-guided fitness assignment + genetic operators + control panel
 // Ricardo Sacadura, Master Degree in Design and Multimedia, 2023
 
 import processing.net.*; //--> Client-Server Network
@@ -18,6 +18,12 @@ serverListener s = new serverListener();
 String exitSketch = "1"; //--> Sent to population for extinguish purposes
 HashMap<String, Integer> windowStatus = new HashMap<String, Integer>();
 int hIncrement= 20;
+
+// --> Server architeture utilities (Control Panel)
+Client v_c; //--> CONTROL PANEL DEV.$$$
+Server v = new Server(this, 12345); //--> CONTROL PANEL DEV.$$$
+serverListener controlPanel = new serverListener(); //--> CONTROL PANEL DEV.$$$
+String [] panelValues = new String[5]; //--> CONTROL PANEL DEV.$$$
 
 // --> ArrayList of objects
 ArrayList<Parameters> parameters = new ArrayList<Parameters>(); //--> Set of parameter extracted from first pop.
@@ -53,7 +59,7 @@ Population pop;
 int popCounter = 0; // --> counting each generation
 
 //--> Parametrization
-int populationSize = 4;
+int populationSize = 1;
 float mutationRate = 0.3;
 float crossoverRate = 0.7;
 int tournamentSize = 3;
@@ -91,6 +97,9 @@ void setup() {
   selectInput("Select a file to process:", "fileSelected");
 
   pop = new Population();
+
+  String path = sketchPath("controls");
+  exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
 }
 
 
@@ -98,7 +107,7 @@ void draw() {
 
   background(0);
 
-  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.2", 35);
+  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.4", 35);
   titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
   elements(font, SGrotesk_Regular, 14, "Fitness Score", width/2, 100);
 
@@ -124,6 +133,20 @@ void draw() {
   s.listenStatus();
   //s.serverPrint();
   s.serverFitness();
+
+  controlPanel.listenValues(); //--> CONTROL PANEL DEV.$$$
+
+  if (panelValues != null) {
+    try {
+      populationSize = int(panelValues[0]);
+      eliteSize = int(panelValues[1]);
+      tournamentSize = int(panelValues[2]);
+      mutationRate = float(panelValues[3]);
+      crossoverRate = float(panelValues[4]);
+    }
+    catch(Exception exc) {
+    }
+  }
 }
 
 void mouseReleased() {
@@ -140,8 +163,6 @@ void mouseReleased() {
       } else if (g == 1) {  // --> CREATE & RUN INITIAL POPULATION
         pop.initialize();
         pop.renderPop();
-        String path = sketchPath("controls");;
-        exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
         indivCounter=0;
         //-----------------//
       } else if (g==2) {  // --> EVOLVE
