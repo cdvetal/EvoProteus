@@ -16,7 +16,7 @@ class Button {
   void create(PFont btn_font, String path) {
 
     stroke(255);
-    strokeWeight(0.7);
+    strokeWeight(1.7);
     if (btnIsHover ==true) {
       fill(255);
     } else {
