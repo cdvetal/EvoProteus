@@ -17,9 +17,10 @@ class Population {
     m = new Main();
   }
 
-  void initialize() { //--> Generates initial population
+  //------------------------------------------------> Generates initial population
+  void initialize() {
 
-    m.extractor(); // --> parameter extraction
+    m.extractor(); // --> Parameter extraction
     ancestors = new Genotype[populationSize];
 
     for (int i = 0; i < populationSize; i++) {
@@ -48,15 +49,15 @@ class Population {
 
     Genotype [] newGeneration = new Genotype[genotype.size()]; //--> (Note) Genotype is an extraction of the genetic code of each initial individual
 
-    // Sort individuals by fitness
+    //------------------------------------------------> Sort individuals by fitness
     sortByFitness();
 
-    //--> Copy elite
+    //------------------------------------------------> Copy elite
     for (int i = 0; i < eliteSize; i++) {
       newGeneration[i] = ancestors[i];
     }
 
-    //--> Create new generation with crossover operator
+    //------------------------------------------------> Create new generation with crossover operator
     for (int i = eliteSize; i < populationSize; i++) {
       if (random(1) <= crossoverRate) {
 
@@ -71,7 +72,7 @@ class Population {
       //println("Population 0, " + "Individual "+i+" :" + genotype.get(i).genes);
     }
 
-    // Mutate new individuals
+    //------------------------------------------------> Mutate new individuals
     for (int i = eliteSize; i < populationSize; i++) {
       newGeneration[i].mutate();
       //println("Population 1, " + "Individual "+i+" :" + newGeneration[i].genes);
@@ -83,7 +84,6 @@ class Population {
 
     popCounter++;
 
-    //Don't know if it's necessary ? m.setGrid();
     for (int i = 0; i < populationSize; i++) {
       serverOpen(); //--> Open servers for population
 
@@ -100,7 +100,7 @@ class Population {
     }
   }
 
-  //--> Select one individual using a tournament selection
+  //------------------------------------------------> Select one individual using a tournament selection
   Genotype tournamentSelection() {
     // Select a random set of individuals from the population
     Genotype[] tournament = new Genotype[tournamentSize];
@@ -127,7 +127,7 @@ class Population {
     );
   }
 
-  // Get an individual from the population located at the given index
+  //------------------------------------------------> Get an individual from the population located at the given index
   Genotype getIndiv(int index) {
     return ancestors[index];
   }

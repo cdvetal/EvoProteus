@@ -1,4 +1,3 @@
-ArrayList <Genotype> genotype = new ArrayList<Genotype>();
 int genCounter = -1;
 int numGenes = 0;
 
@@ -19,7 +18,6 @@ class Genotype {
     genes.set(t, v);
     genesMin.append(min);
     genesMax.append(max);
-    //genes.sortKeys();
     //println("original:" + genes);
     numGenes++;
   }
@@ -36,23 +34,21 @@ class Genotype {
     Genotype child = new Genotype();
     StringDict parentGenes = parent.getGenes();
 
-    int crossover_point = int(random(1, genes.size() - 1));
+    int crossoverPoint = int(random(1, genes.size() - 1));
 
     for (int i = 0; i < genes.size(); i++) {
 
-      if (i < crossover_point) {
+      if (i < crossoverPoint) {
         childGenes[i] = genes.get(keysList[i]);
         child.genesMin.set(i, genesMin.get(i));
         child.genesMax.set(i, genesMax.get(i));
-        println("parent 1 Genes " + childGenes[i]);
-        //println(i + " Child Genes 1: " + child.genes.get(keysList[i]));
+        //println("parent 1 Genes " + childGenes[i]);
       } else {
-        println("crossover point <-");
+        //println("crossover point <-");
         childGenes[i] = parentGenes.get(keysList[i]);
         child.genesMin.set(i, parent.genesMin.get(i));
         child.genesMax.set(i, parent.genesMax.get(i));
-        //println(i + " Child Genes 2: " + child.genes.get(keysList[i]));
-        println("parent 2 Genes " + parentGenes.get(keysList[i]));
+        //println("parent 2 Genes " + parentGenes.get(keysList[i]));
       }
 
       child.genes.set(keysList[i], childGenes[i]);
@@ -73,10 +69,9 @@ class Genotype {
       if (random(1) <= mutationRate) {
 
         String keyType = keysList[i].substring(1, keysList[i].length());
+        
         float min = float(genesMin.get(i));
         float max = float(genesMax.get(i));
-        //float min = 0;
-        //float max = 1;
 
         float stdDeviation = (max - min) / 20.0; //--> Standard deviation parameter
 
@@ -88,19 +83,16 @@ class Genotype {
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);
           println("");
-          //-----------------//
         } else if (keyType.equals(primitives[2])) { //--> Mutate ints
           int mutation = int(constrain(newValue, min, max));
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);
           println("");
-          //-----------------//
         } else if (keyType.equals(primitives[4])) { //--> Mutate booleans
           boolean mutation =   random(2) > 1;
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);
           println("");
-          //-----------------//
         }
       }
     }

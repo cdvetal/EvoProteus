@@ -25,6 +25,7 @@ int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
 
 Population pop;
+ArrayList <Genotype> genotype = new ArrayList<Genotype>();
 
 void setup() {
   size(300, 650);
@@ -34,13 +35,13 @@ void setup() {
   background(0);
 
   //------------------------------------------------> Interface buttons
-  btn_txt [0] = "Run my sketch (opcional)";
-  btn_txt [1] = "Create population (1)";
-  btn_txt [2] = "Next generation (2)";
+  btnTxt [0] = "Run my sketch (opcional)";
+  btnTxt [1] = "Create population (1)";
+  btnTxt [2] = "Next generation (2)";
 
   for (int u  = 0; u < b.length; u++) {
-    b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> Creates menu buttons
-    btn_height += 60;
+    b[u] = new Button(width/2, btnHeight, 250, 40, btnTxt[u]); // --> Creates menu buttons
+    btnHeight += 60;
   }
 
   //------------------------------------------------> Uploads PDE skecthes
@@ -58,13 +59,13 @@ void draw() {
   background(0);
 
   //------------------------------------------------> Interface
-  titleElements(font, grotesk_semi, 24, "Evolving 1.4", 35);
-  titleElements(font, grotesk_regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
-  elements(font, grotesk_regular, 14, "Fitness Score", width/2, 100);
+  titleElements(font, groteskSemi, 24, "Evolving 1.4", 35);
+  titleElements(font, groteskRegular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
+  elements(font, groteskRegular, 14, "Fitness Score", width/2, 100);
 
   for (Button button : b) {
-    button.update(mouseX, mouseY);
-    button.create(font, grotesk_regular);
+    button.update();
+    button.create(font, groteskRegular);
   }
 
   //------------------------------------------------> Fitness viz.
@@ -74,7 +75,7 @@ void draw() {
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
 
     screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
-    titleElements(font, grotesk_regular, 14, screenFitness [i], 130 + 20*i);
+    titleElements(font, groteskRegular, 14, screenFitness [i], 130 + 20*i);
 
     if (rawFitness != null) {
       float fitness = float(rawFitness);
@@ -106,7 +107,7 @@ void mouseReleased() {
 
   for (int g  = 0; g < b.length; g++) {
 
-    if (b[g].getHover() == true) {
+    if (b[g].getHover()) {
 
       if (g == 0) { //------------------------------------------------> (optional) Runs original sketch
         int tabIndex = matcher(path, "/");

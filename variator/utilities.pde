@@ -1,12 +1,12 @@
 // ------------------> Interface font config.
 PFont font;
 String[] fontList = PFont.list();
-String grotesk_semi = fontList[2582];
-String grotesk_regular  = fontList[2581];
+String groteskSemi = fontList[2582];
+String groteskRegular  = fontList[2581];
 
 // --> Title elements method
-void titleElements (PFont typeface, String font_path, int size, String text, float yPos) {
-  typeface = createFont(font_path, 100);
+void titleElements (PFont typeface, String fontPath, int size, String text, float yPos) {
+  typeface = createFont(fontPath, 100);
   fill(200);
   textAlign(CENTER);
   textFont(typeface);
@@ -15,10 +15,9 @@ void titleElements (PFont typeface, String font_path, int size, String text, flo
 }
 
 // --> Text elements method
-void elements (PFont typeface, String font_path, int size, String text, float xPos, float yPos) {
-  typeface = createFont(font_path, 100);
+void elements (PFont typeface, String fontPath, int size, String text, float xPos, float yPos) {
+  typeface = createFont(fontPath, 100);
   fill(200);
-  textAlign(CENTER);
   textFont(typeface);
   textSize(size);
   text(text, xPos, yPos);
@@ -30,10 +29,7 @@ int matcher(String in, String find) {
   int last = -1;
   while (index != -1) {
     index = in.indexOf(find, last+1);
-    if ( index != -1 ) {
-      println(index);
-      last = index;
-    }
+    if ( index != -1 ) last = index;
   }
   return last;
 }

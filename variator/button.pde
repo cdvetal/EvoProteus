@@ -1,7 +1,7 @@
-// --> Buttons
-Button [] b  = new  Button [3]; // --> Array of button objects
-float btn_height = 480; // --> Firts button y-pos on screen
-String [] btn_txt = new String [3];
+//------------------------------------------------> Buttons
+Button [] b  = new  Button [3]; //--> Array of button objects
+float btnHeight = 480; //--> First button yPos on screen
+String [] btnTxt = new String [3];
 
 class Button {
 
@@ -18,37 +18,27 @@ class Button {
     txt = t;
   }
 
-  void create(PFont btn_font, String path) {
+  void create(PFont btnFont, String path) {
 
     stroke(255);
-    strokeWeight(1.7);
-    if (btnIsHover ==true) {
-      fill(255);
-    } else {
-      fill(0);
-    }
+    strokeWeight(1.7); //--> Adjust the button stroke weight
+
+    fill(btnIsHover ? 255 : 0);
+
     rectMode(CENTER);
     rect(buttonX, buttonY, buttonW, buttonH);
 
-    if (btnIsHover ==true) {
-      fill(0);
-    } else {
-      fill(200);
-    }
+    fill(btnIsHover ? 0 : 200);
 
-    btn_font = createFont(path, 100);
-    textFont(btn_font);
+    btnFont = createFont(path, 100);
+    textFont(btnFont);
     textSize(14);
     textAlign(CENTER);
     text(txt, buttonX, buttonY + 5);
   }
 
-  void update(float x, float y) {
-    if (hoverBtn()) {
-      btnIsHover = true;
-    } else {
-      btnIsHover = false;
-    }
+  void update() {
+    btnIsHover = hoverBtn();
   }
 
   boolean hoverBtn() {

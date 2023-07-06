@@ -1,13 +1,10 @@
-// ------------------> IntList of Sketch lines containing parameters
+//------------------------------------------------> IntList of Sketch lines containing parameters
 IntList sketchLine = new IntList(); //--> Lines w/ identified parameters
 IntList sketchLineRefined = new IntList(); //--> Refined lines (no outliers)
 
-String primitives [] = {"String", "float", "int", "char", "boolean"}; // --> Listing primitive data types
+String primitives [] = {"String", "float", "int", "char", "boolean"}; //--> Listing primitive data types
 
-int [] orgSize = new int[2];
-int sketchW, sketchH;
-
-// --> Variables to store input sketch information
+//------------------------------------------------> Variables to store input sketch information
 String inputSketch [] = {"/n"};
 String original [] = {"/n"};
 String path = "/n";
@@ -17,6 +14,8 @@ Main m = new Main(); //--> Initial input information
 int counterGridX = 0, counterGridY=0;
 
 File selection;
+int [] orgSize = new int[2]; //--> Original sketch size
+int sketchW, sketchH;
 
 void fileSelected(File selection) {
   if (selection == null) {
@@ -37,12 +36,9 @@ class Main {
 
   StringList labeledIndex = new StringList(); // --> String to store all labeled indexes
 
-  //-----------------//
-
   String label = "__", attribution = "=", close = ";", comment = "//", min = "min:", max = "max:"; // --> parameter's extraction labels
   String setup = "void setup()", draw = "void draw()", size = "size("; // --> code injection labels
 
-  //-----------------//
 
   int ix_l = -1; //--> index of "__"
   int ix_at = -1, ix_cl = -1, ix_cm = -1; //--> index of "=" , ";" and "//"
@@ -50,18 +46,21 @@ class Main {
   int ix_setup = -1, ix_draw = -1; //--> index of "void setup()"
   int ix_size = -1; //--> index of "size(x,y);";
 
-  //----------> (1) PARAMETERS IDENTIFICATION
+  //------------------------------------------------> (1) Parameters identification
 
   String type, name, value, limits, min_value, max_value;
 
   int gridX = 0, gridY =0 ;
 
-  /*------------------------------------------PARAMETER EXTRACTION FUNCTION--------------------------------------------------------*/
-  /*-------------------------------------------------------------------------------------------------------------------------------*/
+  /**
+   
+   [A] PARAMETER EXTRACTION METHOD
+   
+   */
 
   void extractor () {
 
-    //----------> (2) SEARCHING THE CONCATENATED SKETCHES STRING
+    //------------------------------------------------> (2) Searches through the sketch
 
     for (int i=0; i<inputSketch.length; i++) {
 
@@ -76,7 +75,7 @@ class Main {
       }
     }
 
-    //----------> (3) INSPECTING THE IDENTIFIED LABELLED INDEXES
+    //------------------------------------------------> (3) Inspects the identified labeled indexes
 
     for (int j=0; j<labeledIndex.size(); j++) {
 
@@ -85,25 +84,28 @@ class Main {
       ix_cl = labeledIndex.get(j).indexOf(close);
       ix_cm = labeledIndex.get(j).indexOf(comment);
 
-      type = labeledIndex.get(j).substring(0, ix_l-1); // --> substring variable type
+      // --> substring type
+      type = labeledIndex.get(j).substring(0, ix_l-1);
 
+      // --> substring name
       if (ix_l < ix_at) {
-        name = labeledIndex.get(j).substring(ix_l, ix_at); // --> substring variable name
+        name = labeledIndex.get(j).substring(ix_l, ix_at);
       }
 
-      value = labeledIndex.get(j).substring(ix_at +1, ix_cl); // --> substring variable value
+      // --> substring value
+      value = labeledIndex.get(j).substring(ix_at +1, ix_cl);
 
+      // --> substring comments
       if (ix_cm != -1) {
-        limits = labeledIndex.get(j).substring(ix_cm +2, labeledIndex.get(j).length()); // --> substring variable comments
+        limits = labeledIndex.get(j).substring(ix_cm +2, labeledIndex.get(j).length());
       } else {
         limits = "Undefined";
       }
 
-      //-----------------//
       parameters.add(new Parameters(type, name, value, limits));
     }
 
-    //----------> (4) REMOVE OUTLIERS, (preserve only parameters preceeded by variable declaration)
+    //------------------------------------------------> (4) Removes outliers, (preserve only parameters preceeded by variable declaration)
 
     for (int k = 0; k<parameters.size(); k++) {
 
@@ -120,7 +122,7 @@ class Main {
     }
 
 
-    //----------> (5) PRINT RESULTS
+    //------------------------------------------------> (5) Prints Results
 
     println("List of identified parameters:");
 
@@ -133,10 +135,13 @@ class Main {
     }
   }
 
-  /*------------------------------------------PARAMETERS MANIPULATION FUNCTION--------------------------------------------------------*/
-  /*---------------------------------------------------------------------------------------------------------------------------------*/
+  /**
+   
+   [B] PARAMETERS VARIATION METHOD
+   
+   */
 
-  //----------> (6) EXTRACTED VALUES MANIPULATION
+  //------------------------------------------------> (6) Changes randomly extracted values + Creates the initial pop.
 
   void manipulator () {
 
@@ -156,33 +161,37 @@ class Main {
         min_value =  pamRefined.get(d).limits.substring(ix_min + 4, ix_max - 1);
         max_value =  pamRefined.get(d).limits.substring(ix_max + 4, pamRefined.get(d).limits.length());
 
-        if (variableType.get(d).equals(primitives[1])) { // --> change float values
+        // --> change float values
+        if (variableType.get(d).equals(primitives[1])) {
           float n_value = random(float(min_value), float(max_value));
           pamRefined.get(d).value = str(n_value);
-
-          //-----------------//
-        } else if (variableType.get(d).equals(primitives[2])) { // --> change int values
+        }
+        // --> change int values
+        else if (variableType.get(d).equals(primitives[2])) {
           int n_value = round(random(int(min_value), int(max_value)));
           pamRefined.get(d).value = str(n_value);
-
-          //-----------------//
-        } else if (variableType.get(d).equals(primitives[4])) { // --> change boolean values
+        }
+        // --> change boolean values
+        else if (variableType.get(d).equals(primitives[4])) {
           boolean n_value =   random(2) > 1;
           pamRefined.get(d).value = str(n_value);
-
-          //-----------------//
         }
       } else {
         min_value = "undefined"; // --> No boundaries, no fun.
         max_value = "undefined"; // --> :(
       }
 
-      genotype.get(genCounter).arrange(d + pamRefined.get(d).type, pamRefined.get(d).value, min_value, max_value);
+      genotype.get(genCounter).arrange(d + pamRefined.get(d).type, pamRefined.get(d).value, min_value, max_value); // --> Ready for evolution
     }
   }
 
-  /*------------------------------------------GENERIC CODE INJECTION FUNCTION--------------------------------------------------------*/
-  /*---------------------------------------------------------------------------------------------------------------------------------*/
+  /**
+   
+   [C] GENERIC CODE INJECTION METHOD
+   
+   */
+
+  //--> Necessary for future communications between pop. and system.
 
   void injectorA (int counter) {
 
@@ -195,7 +204,7 @@ class Main {
     injectedSetup [0] = "surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");clientSketches = new Client(this, \"localhost\", 3000 + " + counter + ");//variator";
     injectedDraw  [0] = "final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + \" \" + listener + \" \");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator";
 
-    //-----------------//
+
     for (int q=0; q<inputSketch.length; q++) {
 
       ix_setup = inputSketch[q].indexOf(setup); // --> Finding void setup() in input sketch
@@ -206,7 +215,7 @@ class Main {
         }
       }
     }
-    //-----------------//
+
     for (int q=0; q<inputSketch.length; q++) {
 
       ix_draw = inputSketch[q].indexOf(draw); // --> Finding void draw() in input sketch
@@ -218,7 +227,6 @@ class Main {
       }
     }
 
-    //-----------------//
 
     int last_ix = inputSketch.length; // --> Finding last line in input sketch (simpler for declarations and libraries injection)
 
@@ -227,10 +235,13 @@ class Main {
     }
   }
 
-  /*------------------------------------------MODIFIED PARAMETERS INJECTION FUNCTION + SERVER-CLIENT UTILITIES------------------------------*/
-  /*----------------------------------------------------------------------------------------------------------------------------------------*/
+  /**
+   
+   [D] MODIFIED PARAMETERS INJECTION FUNCTION + SERVER-CLIENT UTILITIES
+   
+   */
 
-  //----------> (7) MANIPULATED VALUES INJECTION
+  //------------------------------------------------> (7) Injects variated values
 
   void injectorB (String [] values) {
 
@@ -248,7 +259,7 @@ class Main {
       ix_cl = inputSketch[ixInjectValues].indexOf(close);
       ix_cm = inputSketch[ixInjectValues].indexOf(comment);
 
-      //---------- SUBSTRING EACH LABELLED LINE TO INJECT MODIFIED VALUE
+      //----------> Substrings each labeled line to inject the variated value
 
       a = inputSketch[ixInjectValues].substring(0, ix_at+1);
       b = inputSketch[ixInjectValues].substring(ix_at+1, ix_cl);
@@ -262,11 +273,13 @@ class Main {
     }
   }
 
+  /**
+   
+   [E] SAVE MODIFIED CODE METHOD
+   
+   */
 
-  /*------------------------------------------SAVE MODIFIED CODE FUNCTION-------------------------------------------------------------------*/
-  /*----------------------------------------------------------------------------------------------------------------------------------------*/
-
-  //----------> (8) MODIFIED SKETCHES WITH PREVIOUS INJECTIONS EXPORTATIONS
+  //------------------------------------------------> (8) Exports new sketches with variations
 
   void popExport(int counter) {
     println("indiv " + nf(counter, 3) + " from population " + nf(popCounter, 3) + " exported.");
@@ -276,11 +289,13 @@ class Main {
     }
   }
 
+  /**
+   
+   [F] RUN MODIFIED CODE SKETCHES FUNCTION
+   
+   */
 
-  /*------------------------------------------RUN MODIFIED CODE SKETCHES FUNCTION-----------------------------------------------------------*/
-  /*----------------------------------------------------------------------------------------------------------------------------------------*/
-
-  //----------> (9) MODIFIED SKETCHES EXECUTION ON SEPARATE WINDOWS
+  //------------------------------------------------> (9) Runs each individual of the current pop.
 
   void runSketch(int counter) {
     String path = "";
@@ -297,7 +312,7 @@ class Main {
     //println(nf(popCounter, 3));
   }
 
-  //----------> (extra) SKETCH SIZE INFORMATION
+  //------------------------------------------------> (extra) Info. on sketch size
 
   int [] getSketchSize() {
 
@@ -325,12 +340,11 @@ class Main {
     sketchSize[0] = sizeW;
     sketchSize[1] = sizeH;
 
-    println("sketchSize is:" + sketchSize[0] + " " + sketchSize[1]);
-
+    //println("sketchSize is:" + sketchSize[0] + " " + sketchSize[1]);
     return sketchSize;
   }
 
-  //----------> (extra) POPULATIONS GRID DISPLAY
+  //------------------------------------------------> (extra) Grid display
 
   void setGrid() {
 

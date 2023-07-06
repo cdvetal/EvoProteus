@@ -2,7 +2,7 @@ import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map; //--> HashMap Library
 
-// ------------------> Server architeture utilities (Sketches)
+//------------------------------------------------> Server architeture utilities (Sketches)
 Client clientSketches;
 ArrayList <Server> serverSketches = new ArrayList<Server>(); //--> ArrayList storing one server per phenotype;
 Listener sketches = new Listener();
@@ -14,7 +14,7 @@ void serverOpen() {
   //println(servers);
 }
 
-// ------------------> Server architeture utilities (Control panel)
+//------------------------------------------------> Server architeture utilities (Control panel)
 Client clientPanel;
 Server serverPanel = new Server(this, 8000); //--> Control panel server;
 Listener controlPanel = new Listener();
@@ -24,13 +24,14 @@ class Listener {
 
   HashMap<String, int[]> positions = new HashMap<>();
 
-  int screenW = Toolkit.getDefaultToolkit().getScreenSize().width; //--> Not used for now
-  int screenH = Toolkit.getDefaultToolkit().getScreenSize().height; //--> Not used for now
+  int screenW = Toolkit.getDefaultToolkit().getScreenSize().width; //--> Not used for now!
+  int screenH = Toolkit.getDefaultToolkit().getScreenSize().height; //--> Not used for now!
 
   String indiv, fScore;
 
 
-  void listenStatus() { //--> Listen window status for each individual
+  //------------------------------------------------> Listens window status for each individual
+  void listenStatus() {
     for (int i = 0; i < serverSketches.size(); i++) {
       clientSketches = serverSketches.get(i).available();
 
@@ -38,9 +39,9 @@ class Listener {
         String input = clientSketches.readString().trim();
         try {
           String[] params = input.split(" ");
-          String sketch_name = params[0];
+          String sketchName = params[0];
           int status = int(params[1]);
-          windowStatus.put(sketch_name, status);
+          windowStatus.put(sketchName, status);
         }
         catch(Exception exc) {
         }
@@ -48,7 +49,8 @@ class Listener {
     }
   }
 
-  StringDict serverFitness() { //--> Fitness score w/window status
+  //------------------------------------------------> Fitness score w/window status
+  StringDict serverFitness() {
 
     StringDict info = new StringDict();
 
@@ -61,7 +63,9 @@ class Listener {
     return info;
   }
 
-  void listenValues() { //--> Listen control panel values
+
+  //------------------------------------------------> Listens control panel values
+  void listenValues() {
 
     clientPanel = serverPanel.available();
 
@@ -79,7 +83,8 @@ class Listener {
     }
   }
 
-  void serverShutdown () { //--> Kill population
+  //------------------------------------------------> Kills population
+  void serverShutdown () {
     for (int i = 0; i < serverSketches.size(); i++) {
       serverSketches.get(i).write(exitSketch);
     }
