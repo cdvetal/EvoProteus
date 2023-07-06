@@ -1,3 +1,6 @@
+// ------------------> ArrayList of Parameter objects
+ArrayList<Parameters> parameters = new ArrayList<Parameters>(); //--> Set of parameter extracted from first pop.
+
 class Parameters {
 
   String type, name, value, limits;

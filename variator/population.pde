@@ -1,5 +1,12 @@
 import java.util.*; //--> Needed to sort arrays
 
+//------------------------------------------------> Genetic operators
+int populationSize = 1;
+float mutationRate = 0.3;
+float crossoverRate = 0.7;
+int tournamentSize = 3;
+int eliteSize = 1;
+
 class Population {
 
   Main m;

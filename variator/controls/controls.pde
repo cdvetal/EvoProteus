@@ -1,5 +1,11 @@
-// "Towards Automated Generative Design", Evolving 1.4
-// Parametrization panel segment
+/**
+ 
+ Towards Automated Generative Design, Variator version 1.4
+ Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
+ ----------------------------------
+ B. Parametrization panel component
+ 
+ */
 
 import processing.net.*;
 import processing.awt.PSurfaceAWT;
@@ -20,15 +26,16 @@ boolean firstMousePress = false;
 Slider [] hs = new Slider [5];
 
 void setup() {
-  
+
   size(800, 130);
   surface.setLocation(displayWidth/2 - (displayWidth/3), displayHeight/2 + int(displayHeight*0.222));
   surface.setTitle("Parametrization");
-  
+  surface.setResizable(true);
+
   PSurfaceAWT awtSurface = (PSurfaceAWT)surface;
   smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();
-  
-  v_c = new Client(this, "localhost", 12345);
+
+  v_c = new Client(this, "localhost", 8000);
 
   font = createFont(SGrotesk_Regular, 100);
   noStroke();
@@ -64,7 +71,7 @@ void setup() {
       operator = "Crossover Rate";
       type = false;
     }
-    
+
     hs[i] = new Slider(40 + (150 * i), height/2, 125, 2, 3, min, max, operator, type);
   }
 }
@@ -82,6 +89,12 @@ void draw() {
   }
 
   v_c.write(hs[0].getOperatorValue() + " " + hs[1].getOperatorValue() + " " + hs[2].getOperatorValue() + " " + hs[3].getOperatorValue() + " " + hs[4].getOperatorValue());
+
+  if (v_c.available() > 0) {
+    input = v_c.readString();
+    exitValue = int(input);
+    if (exitValue == 2) exit();
+  }
 
   if (firstMousePress) {
     firstMousePress = false;

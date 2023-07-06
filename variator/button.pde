@@ -1,3 +1,8 @@
+// --> Buttons
+Button [] b  = new  Button [3]; // --> Array of button objects
+float btn_height = 480; // --> Firts button y-pos on screen
+String [] btn_txt = new String [3];
+
 class Button {
 
   float buttonX, buttonY, buttonW, buttonH;

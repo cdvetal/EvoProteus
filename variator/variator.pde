@@ -1,105 +1,56 @@
-// "Towards Automated Generative Design", Evolving 1.4 - user-guided fitness assignment + genetic operators + control panel
-// Ricardo Sacadura, Master Degree in Design and Multimedia, 2023
+/**
+ 
+ Towards Automated Generative Design, Variator version 1.4
+ Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
+ --------------
+ A. Main system
+ --------------
+ User guide
+ 1.  Create a sketch in processing;
+ 2.  Choose the set of parameters you want to evolve;
+ 3.  Tag those parameters with our markup language;
+ Example:
+ Original variable -> int radius = 0;
+ Marked-up variable -> int __radius = 10; //min:0 max:50
+ (only initializations are read by the system)
+ 4.  Run Variator and upload your sketch;
+ 5.  Explore.
+ (all variated sketches will be stored -> 'variations' folder)
+ 
+ */
 
-import processing.net.*; //--> Client-Server Network
-import java.awt.Toolkit; //--> Screen information
-import java.util.Map; //--> HashMap Library
+//------------------------------------------------> Global counters
+int counter=0; // --> label servers
+int indivCounter=0; // --> label indiv.
+int popCounter = 0; // --> count each generation
 
-// --> Interface typeface
-PFont font;
-String[] fontList = PFont.list();
-String SGrotesk_SemiBold = fontList[2582];
-String SGrotesk_Regular  = fontList[2581];
-
-// --> Server architeture utilities
-Client v_m;
-ArrayList <Server> servers = new ArrayList<Server>(); //--> ArrayList of Servers for each individual;
-serverListener s = new serverListener();
-String exitSketch = "1"; //--> Sent to population for extinguish purposes
-HashMap<String, Integer> windowStatus = new HashMap<String, Integer>();
-int hIncrement= 20;
-
-// --> Server architeture utilities (Control Panel)
-Client v_c;
-Server v = new Server(this, 12345);
-serverListener controlPanel = new serverListener();
-String [] panelValues = new String[5];
-
-// --> ArrayList of objects
-ArrayList<Parameters> parameters = new ArrayList<Parameters>(); //--> Set of parameter extracted from first pop.
-ArrayList<pamRefined> pamRefined = new ArrayList<pamRefined>(); //--> Refined set (no outliers)
-
-// --> ArrayList of sketch lines with parameters
-IntList sketchLine = new IntList(); //--> Lines w/ identified parameters
-IntList sketchLineRefined = new IntList(); //--> Refined lines (no outliers)
-
-String primitivesList [] = {"String", "float", "int", "char", "boolean"}; // --> Listing primitive data types
-
-File selection;
-
-int [] orgSize = new int[2];
-int sketchW, sketchH;
-
-// --> Variables to store input sketch information
-String inputSketch [] = {"/n"};
-String original [] = {"/n"};
-String path = "/n";
-String orgPath = "/n";
-Main m = new Main();//--> Initial input information
-
-
-// --> Buttons
-Button [] b  = new  Button [3]; // --> Array of button objects
-float btn_height = 480; // --> Firts button y-pos on screen
-String [] btn_txt = new String [3];
-
-
-//------------------------------------------------> !GENETIC OPERATORS!
 Population pop;
-int popCounter = 0; // --> counting each generation
-
-//--> Parametrization
-int populationSize = 1;
-float mutationRate = 0.3;
-float crossoverRate = 0.7;
-int tournamentSize = 3;
-int eliteSize = 1;
-//--> Parametrization
-
-ArrayList <Genotype> genotype = new ArrayList<Genotype>();
-int genCounter = -1;
-int numGenes = 0;
-
-int counterGridX = 0, counterGridY=0;
-
-//------------------------------------------------
-
-int counter=0; // --> global variable for population & servers labelling
-int indivCounter=0;
 
 void setup() {
-
   size(300, 650);
   surface.setLocation(displayWidth - (displayWidth/4), displayHeight/7);
+  surface.setResizable(true);
+
   background(0);
 
-  //-----------------//
+  //------------------------------------------------> Interface buttons
   btn_txt [0] = "Run my sketch (opcional)";
   btn_txt [1] = "Create population (1)";
   btn_txt [2] = "Next generation (2)";
 
   for (int u  = 0; u < b.length; u++) {
-    b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> menu buttons init
+    b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> menu buttons init.
     btn_height += 60;
   }
 
-  // --> .pde skecthes extraction
+  //------------------------------------------------> PDE skecthes uploading
   selectInput("Select a file to process:", "fileSelected");
 
-  pop = new Population();
-
+  //------------------------------------------------> Run control-panel
   String path = sketchPath("controls");
   exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
+
+  pop = new Population();
 }
 
 
@@ -107,22 +58,22 @@ void draw() {
 
   background(0);
 
-  titleElements(font, SGrotesk_SemiBold, 24, "Evolving 1.4", 35);
-  titleElements(font, SGrotesk_Regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
-  elements(font, SGrotesk_Regular, 14, "Fitness Score", width/2, 100);
+  titleElements(font, grotesk_semi, 24, "Evolving 1.4", 35);
+  titleElements(font, grotesk_regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
+  elements(font, grotesk_regular, 14, "Fitness Score", width/2, 100);
 
   for (Button button : b) {
     button.update(mouseX, mouseY);
-    button.create(font, SGrotesk_Regular);
+    button.create(font, grotesk_regular);
   }
 
   for (int i = 0; i < populationSize; i++) {
 
     String [] screenFitness = new String [populationSize];
-    String rawFitness = s.serverFitness().get("indiv_"+nf(i, 3));
+    String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
 
-    screenFitness [i] = "indiv_"+ nf(i, 3) + " - " + rawFitness;
-    titleElements(font, SGrotesk_Regular, 14, screenFitness [i], 130 + hIncrement*i);
+    screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
+    titleElements(font, grotesk_regular, 14, screenFitness [i], 130 + 20*i);
 
     if (rawFitness != null) {
       float fitness = float(rawFitness);
@@ -130,9 +81,9 @@ void draw() {
     }
   }
 
-  s.listenStatus();
-  //s.serverPrint();
-  s.serverFitness();
+  sketches.listenStatus();
+  //sketches.serverPrint();
+  sketches.serverFitness();
 
   controlPanel.listenValues();
 
@@ -175,9 +126,21 @@ void mouseReleased() {
         /*---------------*/
         indivCounter=0;
         exitSketch = "2";
-        s.serverShutdown();
+        sketches.serverShutdown();
         exitSketch = "1";
       }
     }
   }
+}
+
+void exit() {
+  exitSketch = "2";
+  sketches.serverShutdown();
+  serverPanel.write(exitSketch);
+  thread("exitDelay");
+}
+
+void exitDelay() {
+  delay(1500);
+  System.exit(0);
 }

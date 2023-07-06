@@ -1,3 +1,7 @@
+ArrayList <Genotype> genotype = new ArrayList<Genotype>();
+int genCounter = -1;
+int numGenes = 0;
+
 class Genotype {
 
   StringDict genes = new StringDict(); //--> List of extracted parameters (previous population)
@@ -79,19 +83,19 @@ class Genotype {
         float current = float(genes.get(keysList[i]));
         float newValue = current + randomGaussian() * stdDeviation;
 
-        if (keyType.equals(primitivesList[1])) { //--> Mutate floats
+        if (keyType.equals(primitives[1])) { //--> Mutate floats
           float mutation = constrain(newValue, min, max);
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);
           println("");
           //-----------------//
-        } else if (keyType.equals(primitivesList[2])) { //--> Mutate ints
+        } else if (keyType.equals(primitives[2])) { //--> Mutate ints
           int mutation = int(constrain(newValue, min, max));
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);
           println("");
           //-----------------//
-        } else if (keyType.equals(primitivesList[4])) { //--> Mutate booleans
+        } else if (keyType.equals(primitives[4])) { //--> Mutate booleans
           boolean mutation =   random(2) > 1;
           genes.set(keysList[i], str(mutation));
           //println(keyType + " current: " + current + " mutatedValue: " + mutation);

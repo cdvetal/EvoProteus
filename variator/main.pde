@@ -1,3 +1,38 @@
+// ------------------> IntList of Sketch lines containing parameters
+IntList sketchLine = new IntList(); //--> Lines w/ identified parameters
+IntList sketchLineRefined = new IntList(); //--> Refined lines (no outliers)
+
+String primitives [] = {"String", "float", "int", "char", "boolean"}; // --> Listing primitive data types
+
+int [] orgSize = new int[2];
+int sketchW, sketchH;
+
+// --> Variables to store input sketch information
+String inputSketch [] = {"/n"};
+String original [] = {"/n"};
+String path = "/n";
+String orgPath = "/n";
+Main m = new Main();//--> Initial input information
+
+int counterGridX = 0, counterGridY=0;
+
+File selection;
+
+void fileSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    original = loadStrings(selection.getAbsolutePath());
+    inputSketch = original;
+    path = selection.getAbsolutePath();
+    orgPath = selection.getAbsolutePath();
+    orgSize = m.getSketchSize();
+    sketchW = orgSize[0];
+    sketchH = orgSize[1];
+    println("User selected " + path);
+  }
+}
+
 class Main {
 
   StringList labeledIndex = new StringList(); // --> String to store all labeled indexes
@@ -74,9 +109,9 @@ class Main {
 
       parameters.get(k).type =  parameters.get(k).type.trim();
 
-      for (int l = 0; l< primitivesList.length; l++) {
+      for (int l = 0; l< primitives.length; l++) {
 
-        if (parameters.get(k).type.equals(primitivesList[l])) {
+        if (parameters.get(k).type.equals(primitives[l])) {
 
           pamRefined.add(new pamRefined(parameters.get(k).type, parameters.get(k).name, parameters.get(k).value, parameters.get(k).limits));
           sketchLineRefined.append(sketchLine.get(k));
@@ -121,17 +156,17 @@ class Main {
         min_value =  pamRefined.get(d).limits.substring(ix_min + 4, ix_max - 1);
         max_value =  pamRefined.get(d).limits.substring(ix_max + 4, pamRefined.get(d).limits.length());
 
-        if (variableType.get(d).equals(primitivesList[1])) { // --> change float values
+        if (variableType.get(d).equals(primitives[1])) { // --> change float values
           float n_value = random(float(min_value), float(max_value));
           pamRefined.get(d).value = str(n_value);
 
           //-----------------//
-        } else if (variableType.get(d).equals(primitivesList[2])) { // --> change int values
+        } else if (variableType.get(d).equals(primitives[2])) { // --> change int values
           int n_value = round(random(int(min_value), int(max_value)));
           pamRefined.get(d).value = str(n_value);
 
           //-----------------//
-        } else if (variableType.get(d).equals(primitivesList[4])) { // --> change boolean values
+        } else if (variableType.get(d).equals(primitives[4])) { // --> change boolean values
           boolean n_value =   random(2) > 1;
           pamRefined.get(d).value = str(n_value);
 
@@ -156,9 +191,9 @@ class Main {
     String injectedBegin [] = new String [1];
     String injectedDraw  [] = new String [1];
 
-    injectedBegin [0] = "import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client v_m;int listener = 0;void exit() { windowOpen = false; thread(\"exitDelay\");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line";
-    injectedSetup [0] = "surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");v_m = new Client(this, \"localhost\", 3000 + " + counter + ");//variator";
-    injectedDraw  [0] = "final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}v_m.write(sketch + \" \" + listener + \" \");if (v_m.available() > 0) {input = v_m.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator";
+    injectedBegin [0] = "import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread(\"exitDelay\");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;//Injected line";
+    injectedSetup [0] = "surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");clientSketches = new Client(this, \"localhost\", 3000 + " + counter + ");//variator";
+    injectedDraw  [0] = "final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + \" \" + listener + \" \");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator";
 
     //-----------------//
     for (int q=0; q<inputSketch.length; q++) {
@@ -272,19 +307,25 @@ class Main {
     String comma = ",", paren = ")";
     int ix_comma = -1, ix_paren = -1;
 
-    for (int i=0; i<inputSketch.length; i++) {
+    for (int i = 0; i < inputSketch.length; i++) {
       ix_size = inputSketch[i].indexOf(size);
       if (ix_size != -1) {
-        ix_comma  = inputSketch[i].indexOf(comma);
-        ix_paren  = inputSketch[i].indexOf(paren);
+        try {
+          ix_comma  = inputSketch[i].indexOf(comma);
+          ix_paren  = inputSketch[i].indexOf(paren);
 
-        sizeW = int(inputSketch[i].substring(ix_size + 5, ix_comma));
-        sizeH = int(inputSketch[i].substring(ix_comma + 2, ix_paren));
+          sizeW = int(inputSketch[i].substring(ix_size + 5, ix_comma));
+          sizeH = int(inputSketch[i].substring(ix_comma + 2, ix_paren));
+        }
+        catch(Exception exc) {
+        }
       }
     }
 
     sketchSize[0] = sizeW;
     sketchSize[1] = sizeH;
+
+    println("sketchSize is:" + sketchSize[0] + " " + sketchSize[1]);
 
     return sketchSize;
   }

@@ -1,3 +1,6 @@
+// ------------------> ArrayList of Parameter objects
+ArrayList<pamRefined> pamRefined = new ArrayList<pamRefined>(); //--> Refined set (without outliers)
+
 class pamRefined {
 
   String type, name, value, limits;

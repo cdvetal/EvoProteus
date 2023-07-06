@@ -1,4 +1,21 @@
-class serverListener {
+import processing.net.*; //--> Client-Server Network
+import java.awt.Toolkit; //--> Screen information
+import java.util.Map; //--> HashMap Library
+
+// ------------------> Server architeture utilities (Sketches)
+Client clientSketches;
+ArrayList <Server> serverSketches = new ArrayList<Server>(); //--> ArrayList storing one server per phenotype;
+Listener sketches = new Listener();
+String exitSketch = "1"; //--> Sent to each phenotype for 'extinguish' purposes
+HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Window info. for fitness score
+
+// ------------------> Server architeture utilities (Control panel)
+Client clientPanel;
+Server serverPanel = new Server(this, 8000); //--> Control panel server;
+Listener controlPanel = new Listener();
+String [] panelValues = new String[5]; //--> String to store listened operators values;
+
+class Listener {
 
   HashMap<String, int[]> positions = new HashMap<>();
 
@@ -9,11 +26,11 @@ class serverListener {
 
 
   void listenStatus() { //--> Listen window status for each individual
-    for (int i = 0; i < servers.size(); i++) {
-      v_m = servers.get(i).available();
+    for (int i = 0; i < serverSketches.size(); i++) {
+      clientSketches = serverSketches.get(i).available();
 
-      if (v_m != null) {
-        String input = v_m.readString().trim();
+      if (clientSketches != null) {
+        String input = clientSketches.readString().trim();
         try {
           String[] params = input.split(" ");
           String sketch_name = params[0];
@@ -41,10 +58,10 @@ class serverListener {
 
   void listenValues() { //--> Listen control panel values
 
-    v_c = v.available();
+    clientPanel = serverPanel.available();
 
-    if (v_c != null) {
-      String input = v_c.readString().trim();
+    if (clientPanel != null) {
+      String input = clientPanel.readString().trim();
       try {
         String[] params = input.split(" ");
         for (int l = 0; l < params.length; l++) {
@@ -58,8 +75,8 @@ class serverListener {
   }
 
   void serverShutdown () { //--> Kill population
-    for (int i = 0; i < servers.size(); i++) {
-      servers.get(i).write(exitSketch);
+    for (int i = 0; i < serverSketches.size(); i++) {
+      serverSketches.get(i).write(exitSketch);
     }
   }
 

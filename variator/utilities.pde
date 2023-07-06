@@ -1,8 +1,13 @@
 /*------------------------------------------MINOR UTILITIES----------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 
-// --> Title elements function
+// ------------------> Interface font config.
+PFont font;
+String[] fontList = PFont.list();
+String grotesk_semi = fontList[2582];
+String grotesk_regular  = fontList[2581];
 
+// --> Title elements function
 void titleElements (PFont title, String font_path, int size, String text, float yPos) {
   title = createFont(font_path, 100);
   fill(200);
@@ -35,22 +40,8 @@ int matcher(String in, String find) {
   return last;
 }
 
-void fileSelected(File selection) {
-  if (selection == null) {
-    println("Window was closed or the user hit cancel.");
-  } else {
-    original = loadStrings(selection.getAbsolutePath());
-    inputSketch = original;
-    path = selection.getAbsolutePath();
-    orgPath = selection.getAbsolutePath();
-    orgSize = m.getSketchSize();
-    sketchW = orgSize[0];
-    sketchH = orgSize[1];
-    println("User selected " + path);
-  }
-}
 
 void serverOpen() {
-  servers.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
+  serverSketches.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
   //println(servers);
 }
