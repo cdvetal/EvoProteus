@@ -9,6 +9,11 @@ Listener sketches = new Listener();
 String exitSketch = "1"; //--> Sent to each phenotype for 'extinguish' purposes
 HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Window info. for fitness score
 
+void serverOpen() {
+  serverSketches.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
+  //println(servers);
+}
+
 // ------------------> Server architeture utilities (Control panel)
 Client clientPanel;
 Server serverPanel = new Server(this, 8000); //--> Control panel server;

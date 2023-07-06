@@ -12,7 +12,7 @@ String inputSketch [] = {"/n"};
 String original [] = {"/n"};
 String path = "/n";
 String orgPath = "/n";
-Main m = new Main();//--> Initial input information
+Main m = new Main(); //--> Initial input information
 
 int counterGridX = 0, counterGridY=0;
 

@@ -39,14 +39,14 @@ void setup() {
   btn_txt [2] = "Next generation (2)";
 
   for (int u  = 0; u < b.length; u++) {
-    b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> menu buttons init.
+    b[u] = new Button(width/2, btn_height, 250, 40, btn_txt[u]); // --> Creates menu buttons
     btn_height += 60;
   }
 
-  //------------------------------------------------> PDE skecthes uploading
+  //------------------------------------------------> Uploads PDE skecthes
   selectInput("Select a file to process:", "fileSelected");
 
-  //------------------------------------------------> Run control-panel
+  //------------------------------------------------> Runs control-panel
   String path = sketchPath("controls");
   exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
 
@@ -55,9 +55,9 @@ void setup() {
 
 
 void draw() {
-
   background(0);
 
+  //------------------------------------------------> Interface
   titleElements(font, grotesk_semi, 24, "Evolving 1.4", 35);
   titleElements(font, grotesk_regular, 14, "Gen." + pop.getGenerations() + "  Pop. Size. " + populationSize, 65);
   elements(font, grotesk_regular, 14, "Fitness Score", width/2, 100);
@@ -67,6 +67,7 @@ void draw() {
     button.create(font, grotesk_regular);
   }
 
+  //------------------------------------------------> Fitness viz.
   for (int i = 0; i < populationSize; i++) {
 
     String [] screenFitness = new String [populationSize];
@@ -81,13 +82,14 @@ void draw() {
     }
   }
 
+  //------------------------------------------------> Communication between sketches
   sketches.listenStatus();
   //sketches.serverPrint();
   sketches.serverFitness();
 
   controlPanel.listenValues();
 
-  if (panelValues != null) {
+  if (panelValues != null) {  //--> Gathers info. on the parametrization
     try {
       populationSize = int(panelValues[0]);
       eliteSize = int(panelValues[1]);
@@ -105,26 +107,25 @@ void mouseReleased() {
   for (int g  = 0; g < b.length; g++) {
 
     if (b[g].getHover() == true) {
-      //-----------------//
-      if (g==0) { // --> RUN ORIGINAL SKETCH
+
+      if (g == 0) { //------------------------------------------------> (optional) Runs original sketch
         int tabIndex = matcher(path, "/");
         String str = path.substring(0, tabIndex);
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
-        //-----------------//
-      } else if (g == 1) {  // --> CREATE & RUN INITIAL POPULATION
+      } else if (g == 1) { //------------------------------------------------> (1) Creates and runs initial pop.
         pop.initialize();
         pop.renderPop();
+
         indivCounter=0;
-        //-----------------//
-      } else if (g==2) {  // --> EVOLVE
+      } else if (g == 2) { //------------------------------------------------> (2) Evolves
         delay(1000);
-        /*---------------*/
         counterGridX = 0;
         counterGridY = 0;
+
         pop.evolve();
         pop.renderPop();
-        /*---------------*/
         indivCounter=0;
+
         exitSketch = "2";
         sketches.serverShutdown();
         exitSketch = "1";
@@ -133,6 +134,7 @@ void mouseReleased() {
   }
 }
 
+//------------------------------------------------> Method to close all open windows
 void exit() {
   exitSketch = "2";
   sketches.serverShutdown();
