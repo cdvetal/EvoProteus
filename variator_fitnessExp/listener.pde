@@ -7,6 +7,7 @@ Client clientSketches;
 ArrayList <Server> serverSketches = new ArrayList<Server>(); //--> ArrayList storing one server per phenotype;
 Listener sketches = new Listener();
 String exitSketch = "1"; //--> Sent to each phenotype for 'extinguish' purposes
+
 HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Window info. for fitness score
 
 void serverOpen() {
@@ -21,6 +22,10 @@ Client clientPanel;
 Server serverPanel = new Server(this, 8000); //--> Control panel server;
 Listener controlPanel = new Listener();
 String [] panelValues = new String[5]; //--> String to store listened operators values;
+
+int sketchW, sketchH;
+
+float fitnessSub = 0;
 
 class Listener {
 
@@ -43,12 +48,44 @@ class Listener {
           String[] params = input.split(" ");
           String sketchName = params[0];
           int status = int(params[1]);
+          int x = int(params[2]);
+          int y = int(params[3]);
           windowStatus.put(sketchName, status);
+          positions.put(sketchName, new int[]{x, y});
         }
         catch(Exception exc) {
         }
       }
     }
+  }
+
+  //------------------------------------------------> Sketches location on-screen
+  void sketchesLocation() {
+    for (String value : positions.keySet()) {
+
+      float difW = screenW - sketchW;
+      float difY = screenH - sketchH;
+
+      int [] pos = positions.get(value);
+      float xPos =  map(pos[0], 0, difW, 0, 1);
+      float yPos =  map(pos[1], 23, difY - 23, 0, 1);
+
+      if (xPos >= 0 && xPos <= 1 && yPos <= 0.5) {
+        //println(value + "seems nice - " + "x:" + pos[0] + " y:" + pos[1]);
+      }
+
+      if (pos[0] <= 0) {
+        fitnessSub = map(pos[0], 0, -sketchW, 0, 1);
+      } else if (pos[0] >= difW) {
+        fitnessSub = map(pos[0], difW, screenW, 0, 1);
+      } else if (pos[1] >= difY) {
+        fitnessSub = map(pos[1], difY, screenH, 0, 1);
+      }
+    }
+  }
+
+  float getFitnessSub() {
+    return fitnessSub;
   }
 
   //------------------------------------------------> Fitness score w/window status
@@ -59,9 +96,14 @@ class Listener {
     for (Map.Entry me : windowStatus.entrySet()) {
       indiv  = me.getKey().toString();
       fScore = me.getValue().toString();
+      /*float x = float(fScore);
+       if (x == 1) {
+       x -= fitnessSub;
+       fScore = str(x);
+       }*/
       info.set(indiv, fScore);
+      println(info);
     }
-
     return info;
   }
 

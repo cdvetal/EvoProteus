@@ -7,20 +7,20 @@
  */
 
 boolean __bg=false; //min:0 max:1
-float __h=11.2497635; //min:0 max:360
-float __s =31.422842; //min:0 max:100
-float __b =46.867268; //min:0 max:100
-float __op =43.45437; //min:0 max:100
+float __h=359.196; //min:0 max:360
+float __s =70.77937; //min:0 max:100
+float __b =36.34797; //min:0 max:100
+float __op =92.94789; //min:0 max:100
 
 int __num_circles=3; //min:1 max:6
-int __num_min=5; //min:2 max:10
-int __num_max=22; //min:10 max:30
+int __num_min=9; //min:2 max:10
+int __num_max=20; //min:10 max:30
 
-float __pos=0.25148597; //min:0.1 max:0.4
-float __size=189.31024; //min:20 max:200
+float __pos=0.2377128; //min:0.1 max:0.4
+float __size=26.115543; //min:20 max:200
 
 void setup() {
-surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");clientSketches = new Client(this, "localhost", 3000 + 1);//variator
+surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");clientSketches = new Client(this, "localhost", 3000 + 0);//variator
   size(300, 200);
 
   if (__bg)   background(0);
@@ -36,7 +36,7 @@ surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smooth
 }
 
 void draw() {
-final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + " " + listener + " ");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
+final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + " " + listener + " " + p.x + " " + p.y);if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
 }
 
 void drawTarget(float xloc, float yloc, float size, int num) {

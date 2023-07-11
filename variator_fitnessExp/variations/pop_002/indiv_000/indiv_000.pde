@@ -6,21 +6,21 @@
  * rings for each target.
  */
 
-boolean __bg=true; //min:0 max:1
-float __h=226.72874; //min:0 max:360
-float __s =49.341946; //min:0 max:100
-float __b =43.812294; //min:0 max:100
-float __op =20.247227; //min:0 max:100
+boolean __bg=false; //min:0 max:1
+float __h=22.371447; //min:0 max:360
+float __s =0.97283125; //min:0 max:100
+float __b =12.725282; //min:0 max:100
+float __op =34.727703; //min:0 max:100
 
-int __num_circles=4; //min:1 max:6
-int __num_min=8; //min:2 max:10
-int __num_max=16; //min:10 max:30
+int __num_circles=6; //min:1 max:6
+int __num_min=4; //min:2 max:10
+int __num_max=25; //min:10 max:30
 
-float __pos=0.21829739; //min:0.1 max:0.4
-float __size=159.81725; //min:20 max:200
+float __pos=0.16732994; //min:0.1 max:0.4
+float __size=83.86275; //min:20 max:200
 
 void setup() {
-surface.setLocation(23,292);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");clientSketches = new Client(this, "localhost", 3000 + 3);//variator
+surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");clientSketches = new Client(this, "localhost", 3000 + 0);//variator
   size(300, 200);
 
   if (__bg)   background(0);
@@ -36,7 +36,7 @@ surface.setLocation(23,292);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smooth
 }
 
 void draw() {
-final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + " " + listener + " ");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
+final String sketch = getClass().getName();java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(sketch + " " + listener + " " + p.x + " " + p.y);if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//variator
 }
 
 void drawTarget(float xloc, float yloc, float size, int num) {
