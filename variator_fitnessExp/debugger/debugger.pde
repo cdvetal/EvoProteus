@@ -2,7 +2,7 @@ import java.io.InputStreamReader;
 import java.io.FileInputStream;
 
 void setup() {
-  for (int i = 0; i < 14; i++) {
+  for (int i = 0; i < 10; i++) {
     println("Launching processing sketch #" + (i + 1));
     thread("launchProcessingSketch");
   }
@@ -12,7 +12,7 @@ void draw() {
 }
 
 void launchProcessingSketch() {
-  String path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator_fitnessExp/variations/pop_000/indiv_000/";
+  String path = "/Users/ricardosacadura/faculdade/quinto_ano/Tese/towards-automated-generative-design/variator_fitnessExp/inputs/circles/";
   Process process = exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
 
   //BufferedReader readerInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -39,9 +39,8 @@ void launchProcessingSketch() {
   catch(IOException e) {
     e.printStackTrace();
   }
-
-  println("ola");
-  if (frameCount % 60 == 0) {
-    println(frameCount);
-  }
 }
+
+// https://youtrack.jetbrains.com/issue/JBR-5462
+// https://bugs.openjdk.org/browse/JDK-8066436
+// https://github.com/frohoff/jdk8u-jdk/blob/master/src/macosx/classes/sun/lwawt/macosx/CPlatformWindow.java

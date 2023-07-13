@@ -19,7 +19,9 @@ int __num_max= 20; //min:10 max:30
 float __pos= 0.25; //min:0.1 max:0.4
 float __size= 100; //min:20 max:200
 
+
 void setup() {
+
   size(300, 200);
 
   if (__bg)   background(0);

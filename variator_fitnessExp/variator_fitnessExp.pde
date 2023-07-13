@@ -75,6 +75,12 @@ void draw() {
     String [] screenFitness = new String [populationSize];
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
 
+    /*if (process.size() == populationSize) { //DEBUG
+     if (sketches.serverFitness().get("indiv_"+nf(i, 3)) == null) {
+     process.get(i).destroyForcibly();
+     }
+     }*/
+
     screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
     titleElements(font, groteskRegular, 14, screenFitness [i], 130 + 20*i);
 
@@ -88,7 +94,7 @@ void draw() {
   sketches.listenStatus();
   //sketches.serverPrint();
   sketches.serverFitness();
-  /* [new-code position feature]*/  sketches.sketchesLocation();
+  sketches.sketchesLocation();
 
   controlPanel.listenValues();
 
@@ -110,7 +116,6 @@ void mouseReleased() {
   for (int g  = 0; g < b.length; g++) {
 
     if (b[g].getHover()) {
-
       if (g == 0) { //------------------------------------------------> (optional) Runs original sketch
         int tabIndex = matcher(path, "/");
         String str = path.substring(0, tabIndex);
@@ -118,7 +123,6 @@ void mouseReleased() {
       } else if (g == 1) { //------------------------------------------------> (1) Creates and runs initial pop.
         pop.initialize();
         pop.renderPop();
-
         indivCounter=0;
       } else if (g == 2) { //------------------------------------------------> (2) Evolves
         delay(1000);
@@ -134,6 +138,13 @@ void mouseReleased() {
         exitSketch = "1";
       }
     }
+  }
+}
+
+void keyReleased() {
+  if (key == ' ') {
+    pop.reRenderIndiv();
+    println("SketchesName: " + sketchesName);
   }
 }
 

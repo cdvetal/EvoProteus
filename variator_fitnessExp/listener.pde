@@ -27,6 +27,8 @@ int sketchW, sketchH;
 
 float fitnessSub = 0;
 
+StringList sketchesName = new StringList();
+
 class Listener {
 
   HashMap<String, int[]> positions = new HashMap<>();
@@ -46,12 +48,20 @@ class Listener {
         String input = clientSketches.readString().trim();
         try {
           String[] params = input.split(" ");
-          String sketchName = params[0];
-          int status = int(params[1]);
-          int x = int(params[2]);
-          int y = int(params[3]);
-          windowStatus.put(sketchName, status);
-          positions.put(sketchName, new int[]{x, y});
+          if (params[0].equals("1")) {
+            String sketchName = params[1];
+            int status = int(params[2]);
+            int x = int(params[3]);
+            int y = int(params[4]);
+            windowStatus.put(sketchName, status);
+            positions.put(sketchName, new int[]{x, y});
+          }
+          if (params[0].equals("0")) {
+            sketchesName.append(params[1]);
+            println("Detected IP's: " + params[1] + " " + params[2]);
+            //println(params[1]);
+            
+          }
         }
         catch(Exception exc) {
         }
@@ -102,7 +112,6 @@ class Listener {
        fScore = str(x);
        }*/
       info.set(indiv, fScore);
-      println(info);
     }
     return info;
   }

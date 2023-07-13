@@ -91,7 +91,6 @@ class Population {
       m.injectorA(indivCounter);
       m.injectorB(ancestors[i].genes.valueArray());
       //println(newGeneration[i].genes.valueArray());
-
       m.popExport(indivCounter);
 
       indivCounter++;
@@ -134,6 +133,10 @@ class Population {
 
   void renderPop() {
     m.runSketch(indivCounter); // --> Execute modified sketches in separate windows
+  }
+
+  void reRenderIndiv() {
+    m.zombieDetector(sketchesName);
   }
 
   int getGenerations() {
