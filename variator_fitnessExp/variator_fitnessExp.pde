@@ -35,6 +35,10 @@ void setup() {
 
   background(0);
 
+  systemID = int(ProcessHandle.current().pid());
+  systemIDtoText = str(systemID);
+  println("System ID: " + systemIDtoText);
+
   //------------------------------------------------> Interface buttons
   btnTxt [0] = "Run my sketch (opcional)";
   btnTxt [1] = "Create population (1)";
@@ -74,12 +78,6 @@ void draw() {
 
     String [] screenFitness = new String [populationSize];
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
-
-    /*if (process.size() == populationSize) { //DEBUG
-     if (sketches.serverFitness().get("indiv_"+nf(i, 3)) == null) {
-     process.get(i).destroyForcibly();
-     }
-     }*/
 
     screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
     titleElements(font, groteskRegular, 14, screenFitness [i], 130 + 20*i);
@@ -126,6 +124,10 @@ void mouseReleased() {
         indivCounter=0;
       } else if (g == 2) { //------------------------------------------------> (2) Evolves
         delay(1000);
+        sketchesName.clear();
+        healthySketchesID.clear();
+        zombieSketch.clear();
+
         counterGridX = 0;
         counterGridY = 0;
 
@@ -144,7 +146,7 @@ void mouseReleased() {
 void keyReleased() {
   if (key == ' ') {
     pop.reRenderIndiv();
-    println("SketchesName: " + sketchesName);
+    //println("SketchesName: " + sketchesName);
   }
 }
 

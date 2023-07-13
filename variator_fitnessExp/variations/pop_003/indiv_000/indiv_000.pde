@@ -7,20 +7,20 @@
  */
 
 boolean __bg=true; //min:0 max:1
-float __h=100.30148; //min:0 max:360
-float __s =11.673909; //min:0 max:100
-float __b =47.665154; //min:0 max:100
-float __op =73.51214; //min:0 max:100
+float __h=174.13222; //min:0 max:360
+float __s =78.630264; //min:0 max:100
+float __b =71.993645; //min:0 max:100
+float __op =68.00774; //min:0 max:100
 
-int __num_circles=5; //min:1 max:6
-int __num_min=9; //min:2 max:10
+int __num_circles=1; //min:1 max:6
+int __num_min=2; //min:2 max:10
 int __num_max=21; //min:10 max:30
 
-float __pos=0.3318915; //min:0.1 max:0.4
-float __size=161.12285; //min:20 max:200
+float __pos=0.32542953; //min:0.1 max:0.4
+float __size=41.380615; //min:20 max:200
 
 void setup() {
-clientSketches = new Client(this, "localhost", 3000 + 0);clientSketches.write("0" + " " + sketch);surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
+clientSketches = new Client(this, "localhost", 3000 + 0);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
   size(300, 200);
 
   if (__bg)   background(0);
@@ -46,4 +46,4 @@ void drawTarget(float xloc, float yloc, float size, int num) {
     ellipse(xloc, yloc, size - i*steps, size - i*steps);
   }
 }
-import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();//Injected line
+import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();int pid;String pidT;//Injected line

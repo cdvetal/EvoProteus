@@ -6,21 +6,21 @@
  * rings for each target.
  */
 
-boolean __bg=false; //min:0 max:1
-float __h=111.39549; //min:0 max:360
-float __s =30.864765; //min:0 max:100
-float __b =55.250767; //min:0 max:100
-float __op =89.45722; //min:0 max:100
+boolean __bg=true; //min:0 max:1
+float __h=187.4159; //min:0 max:360
+float __s =69.247406; //min:0 max:100
+float __b =66.084595; //min:0 max:100
+float __op =68.716446; //min:0 max:100
 
-int __num_circles=3; //min:1 max:6
-int __num_min=3; //min:2 max:10
-int __num_max=17; //min:10 max:30
+int __num_circles=1; //min:1 max:6
+int __num_min=2; //min:2 max:10
+int __num_max=21; //min:10 max:30
 
-float __pos=0.2762724; //min:0.1 max:0.4
-float __size=77.12685; //min:20 max:200
+float __pos=0.32542953; //min:0.1 max:0.4
+float __size=35.2212; //min:20 max:200
 
 void setup() {
-clientSketches = new Client(this, "localhost", 3000 + 0);clientSketches.write("0" + " " + sketch);surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
+clientSketches = new Client(this, "localhost", 3000 + 0);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(23,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
   size(300, 200);
 
   if (__bg)   background(0);
@@ -46,4 +46,4 @@ void drawTarget(float xloc, float yloc, float size, int num) {
     ellipse(xloc, yloc, size - i*steps, size - i*steps);
   }
 }
-import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();//Injected line
+import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread("exitDelay");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();int pid;String pidT;//Injected line

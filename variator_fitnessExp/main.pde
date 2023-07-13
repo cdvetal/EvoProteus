@@ -32,8 +32,14 @@ void fileSelected(File selection) {
   }
 }
 
+//------------------------------------------------> Variables for debugging
+
 ArrayList<Process> process = new ArrayList<Process>(); // --> Stores exec() process chain
 StringList zombieSketch = new StringList();
+int systemID;
+String systemIDtoText;
+
+StringList healthySketchesID = new StringList();
 
 class Main {
 
@@ -300,14 +306,7 @@ class Main {
         println("nothing to run");
       } else {
         Process v = exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
-        delay(200);
         process.add(v);
-
-        //v.destroyForcibly(); // DEBGUG
-        /*for (int i = 0; i < process.size(); ++i) {
-         process.get(0).destroyForcibly();
-         println(process.get(i).pid());
-         }*/
 
         //println(process);
       }
@@ -315,7 +314,11 @@ class Main {
     //println(nf(popCounter, 3));
   }
 
-  void zombieDetector(StringList sketchesName) {
+  //------------------------------------------------> (10) Debugs stucked indiv.
+
+  void zombieDetector(StringList sketchesName, StringList javaProcesses) {
+
+    //--> (A) Re-run stucked sketches;
 
     StringList execSketches = new StringList();
 
@@ -323,6 +326,9 @@ class Main {
       execSketches.append("indiv_"+nf(l, 3));
     }
 
+    println("This sketches sent their names: " + sketchesName);
+    println(" ");
+    
     for (String str : execSketches) {
       boolean found = false;
       for (String str2 : sketchesName) {
@@ -333,17 +339,55 @@ class Main {
       }
       if (!found) {
         zombieSketch.append(str);
-        //println("zombie detected: " + zombieSketch);
+        println("Zombie detected: " + zombieSketch);
       }
     }
 
     if (zombieSketch.size() != 0) {
       for (int k = 0; k < zombieSketch.size(); ++k) {
-        path = sketchPath("variations/pop_"+nf(popCounter, 3)+"/"+zombieSketch.get(k));
+        path = sketchPath("variations/pop_"+nf(popCounter, 3) + "/" + zombieSketch.get(k));
         exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
       }
     } else {
       println("There's no zombie sketch.");
+    }
+
+    //--> (B) Kill -9 stucked processes;
+    StringList processFilter = new StringList();
+
+    for (String process : javaProcesses) {
+      String [] processList = process.split(" ");
+      if (processList[1].equals("processing.core.PApplet")) processFilter.append(processList[0]);
+    }
+
+    for (int f = 0; f < processFilter.size(); ++f) {
+      if (processFilter.get(f).equals(systemIDtoText)) processFilter.remove(f);
+    }
+
+    for (int a = 0; a < healthySketchesID.size(); ++a) {
+      String healthy = healthySketchesID.get(a);
+
+      for (int b = 0; b < processFilter.size(); ++b) {
+        String filter = processFilter.get(b);
+        if (filter.equals(healthy)) {
+          processFilter.remove(b);
+          --b;
+        }
+      }
+    }
+
+    println("Processes to kill: " + processFilter);
+
+    if (processFilter.size() != 0) {
+      try {
+        for (int k = 0; k < processFilter.size(); ++k) {
+          Runtime.getRuntime().exec("kill -9 " + processFilter.get(k));
+        }
+      }
+      catch (Exception e) {
+      }
+    } else {
+      println("There's no zombie process.");
     }
   }
 

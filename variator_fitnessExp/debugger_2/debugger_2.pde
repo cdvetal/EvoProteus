@@ -85,8 +85,8 @@ void keyPressed() {
     }
     println(windowProcesses);
     try {
-      for (int i = 0; i < windowProcesses.size(); i++) {
-        Runtime.getRuntime().exec("kill " + windowProcesses.get(i));
+      for (int i = 1; i < windowProcesses.size(); i++) {
+        //Runtime.getRuntime().exec("kill " + windowProcesses.get(i));
       }
     }
     catch (Exception e) {

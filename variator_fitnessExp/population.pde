@@ -136,7 +136,14 @@ class Population {
   }
 
   void reRenderIndiv() {
-    m.zombieDetector(sketchesName);
+    try {
+      StringList javaProcesses = new StringList();
+      javaProcesses = getCurrentJavaProcesses();
+
+      m.zombieDetector(sketchesName, javaProcesses);
+    }
+    catch (Exception e) {
+    }
   }
 
   int getGenerations() {

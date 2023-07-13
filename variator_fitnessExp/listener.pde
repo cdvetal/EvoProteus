@@ -2,6 +2,9 @@ import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map; //--> HashMap Library
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 //------------------------------------------------> Server architeture utilities (Sketches)
 Client clientSketches;
 ArrayList <Server> serverSketches = new ArrayList<Server>(); //--> ArrayList storing one server per phenotype;
@@ -57,10 +60,17 @@ class Listener {
             positions.put(sketchName, new int[]{x, y});
           }
           if (params[0].equals("0")) {
+
             sketchesName.append(params[1]);
-            println("Detected IP's: " + params[1] + " " + params[2]);
+            if (params[2].length() > 5) {
+              String cutID = params[2].substring(0, 5);
+              healthySketchesID.append(cutID);
+              println("Detected ID's: " + params[1] + " " + cutID);
+            } else {
+              healthySketchesID.append(params[2]);
+              println("Detected ID's: " + params[1] + " " + params[2]);
+            }
             //println(params[1]);
-            
           }
         }
         catch(Exception exc) {
@@ -150,4 +160,21 @@ class Listener {
   String getFitness () {
     return fScore;
   }
+}
+
+// --> Store current java processes method
+
+StringList getCurrentJavaProcesses() throws Exception {
+
+  Process process = Runtime.getRuntime().exec("jps -l");
+  BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+  StringList output = new StringList();
+  String line;
+
+  while ((line = reader.readLine()) != null) {
+    output.append(line);
+  }
+
+  reader.close();
+  return output;
 }
