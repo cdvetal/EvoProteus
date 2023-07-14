@@ -27,7 +27,7 @@ class Slider {
     ratio = (float)sw / (float)widthtoheight;
     xpos = xp;
     ypos = yp - sheight/2;
-    spos = xpos;
+    spos = xpos - swidth/4;
     newspos = spos;
     sposMin = xpos - swidth/2;
     sposMax = xpos + swidth/2;
@@ -112,7 +112,7 @@ class Slider {
 
 void createSliders (Slider [] hs) {
 
-  float yPos = height * 0.53;
+  float yPos = height * 0.47;
 
   for (int i = 0; i < hs.length; i++) {
     float min = 0, max = 0;
@@ -137,16 +137,16 @@ void createSliders (Slider [] hs) {
     } else if (i == 3) {
       min = 0;
       max = 1;
-      operator = "Mutation Rate";
+      operator = "Crossover Rate";
       type = false;
     } else if (i == 4) {
       min = 0;
       max = 1;
-      operator = "Crossover Rate";
+      operator = "Mutation Rate";
       type = false;
     }
 
     hs[i] = new Slider(width/2, yPos, 125, 2, 3, min, max, operator, type);
-    yPos+=55;
+    yPos+=60; // --> Set distance between sliders
   }
 }

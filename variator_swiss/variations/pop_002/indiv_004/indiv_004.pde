@@ -6,21 +6,21 @@
  * rings for each target.
  */
 
-boolean __bg=false; //min:0 max:1
-float __h=71.23999; //min:0 max:360
-float __s =85.033905; //min:0 max:100
-float __b =100.0; //min:0 max:100
-float __op =54.57666; //min:0 max:100
+boolean __bg=true; //min:0 max:1
+float __h=342.40286; //min:0 max:360
+float __s =96.90333; //min:0 max:100
+float __b =41.802063; //min:0 max:100
+float __op =76.22659; //min:0 max:100
 
-int __num_circles=1; //min:1 max:6
-int __num_min=5; //min:2 max:10
-int __num_max=20; //min:10 max:30
+int __num_circles=3; //min:1 max:6
+int __num_min=9; //min:2 max:10
+int __num_max=24; //min:10 max:30
 
-float __pos=0.28636417; //min:0.1 max:0.4
-float __size=160.16443; //min:20 max:200
+float __pos=0.24096425; //min:0.1 max:0.4
+float __size=113.63275; //min:20 max:200
 
 void setup() {
-clientSketches = new Client(this, "localhost", 3000 + 4);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(346,292);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
+clientSketches = new Client(this, "localhost", 3000 + 4);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(23,292);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");//Injected line
   size(300, 200);
 
   if (__bg)   background(0);

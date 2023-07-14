@@ -46,7 +46,7 @@ class Population {
   }
 
   void evolve() {
-
+    
     Genotype [] newGeneration = new Genotype[genotype.size()]; //--> (Note) Genotype is an extraction of the genetic code of each initial individual
 
     //------------------------------------------------> Sort individuals by fitness

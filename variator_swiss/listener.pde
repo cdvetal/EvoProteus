@@ -20,12 +20,6 @@ void serverOpen() {
   //println(servers);
 }
 
-//------------------------------------------------> Server architeture utilities (Control panel)
-Client clientPanel;
-Server serverPanel = new Server(this, 8000); //--> Control panel server;
-Listener controlPanel = new Listener();
-String [] panelValues = new String[5]; //--> String to store listened operators values;
-
 int sketchW, sketchH;
 
 float fitnessSub = 0;
@@ -65,10 +59,10 @@ class Listener {
             if (params[2].length() > 5) {
               String cutID = params[2].substring(0, 5);
               healthySketchesID.append(cutID);
-              println("Detected ID's: " + params[1] + " " + cutID);
+              println(params[1] + " rendered." + " ID: " + cutID);
             } else {
               healthySketchesID.append(params[2]);
-              println("Detected ID's: " + params[1] + " " + params[2]);
+              println(params[1] + " rendered." + " ID: " + params[2]);
             }
             //println(params[1]);
           }
@@ -124,26 +118,6 @@ class Listener {
       info.set(indiv, fScore);
     }
     return info;
-  }
-
-
-  //------------------------------------------------> Listens control panel values
-  void listenValues() {
-
-    clientPanel = serverPanel.available();
-
-    if (clientPanel != null) {
-      String input = clientPanel.readString().trim();
-      try {
-        String[] params = input.split(" ");
-        for (int l = 0; l < params.length; l++) {
-          panelValues[l] = params[l];
-          //println(params[l]);
-        }
-      }
-      catch(Exception exc) {
-      }
-    }
   }
 
   //------------------------------------------------> Kills population

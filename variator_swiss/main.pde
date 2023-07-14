@@ -325,9 +325,6 @@ class Main {
     for (int l = 0; l < populationSize; ++l) {
       execSketches.append("indiv_"+nf(l, 3));
     }
-
-    println("This sketches sent their names: " + sketchesName);
-    println(" ");
     
     for (String str : execSketches) {
       boolean found = false;
@@ -339,6 +336,7 @@ class Main {
       }
       if (!found) {
         zombieSketch.append(str);
+        println("-------------");
         println("Zombie detected: " + zombieSketch);
       }
     }
@@ -349,6 +347,7 @@ class Main {
         exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
       }
     } else {
+      println("-------------");
       println("There's no zombie sketch.");
     }
 
@@ -387,7 +386,7 @@ class Main {
       catch (Exception e) {
       }
     } else {
-      println("There's no zombie process.");
+      //println("There's no zombie process.");
     }
   }
 
@@ -427,7 +426,7 @@ class Main {
 
   void setGrid() {
 
-    if (counterGridX == 3) {
+    if (counterGridX == 4) {
       counterGridX = 0;
       counterGridY += 1;
     }

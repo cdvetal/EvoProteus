@@ -1,40 +1,58 @@
 //------------------------------------------------> Buttons
-Button [] b  = new  Button [3]; //--> Array of button objects
+Button [] b = new Button [3];
+
 float btnHeight = 625; //--> First button yPos on screen
 String [] btnTxt = new String [3];
+
 
 class Button {
 
   float buttonX, buttonY, buttonW, buttonH;
   String txt;
+  int version;
 
   boolean btnIsHover = false;
 
-  Button(float x, float y, float w, float h, String t) {
+  Button(float x, float y, float w, float h, String t, int v) {
     buttonX = x;
     buttonY = y;
     buttonW = w;
     buttonH = h;
     txt = t;
+    version = v;
   }
 
   void create(PFont btnFont, String path) {
 
     stroke(255);
-    strokeWeight(1.7); //--> Adjust the button stroke weight
-
-    fill(btnIsHover ? 255 : 0);
 
     rectMode(CENTER);
-    rect(buttonX, buttonY, buttonW, buttonH);
-
-    fill(btnIsHover ? 0 : 200);
+    textAlign(CENTER);
 
     btnFont = createFont(path, 100);
     textFont(btnFont);
-    textSize(14);
-    textAlign(CENTER);
-    text(txt, buttonX, buttonY + 5);
+
+    if (version == 1) {
+
+      strokeWeight(1.7); //--> Adjust the button stroke weight
+      fill(btnIsHover ? 255 : 0);
+      rect(buttonX, buttonY, buttonW, buttonH);
+
+      fill(btnIsHover ? 0 : 200);
+      textSize(14);
+      setButtonTxt(btnTxt[0]);
+      text(txt, buttonX, buttonY + 5);
+    } else if (version == 2) {
+
+      strokeWeight(1); //--> Adjust the button stroke weight
+      fill(btnIsHover ? 255 : 200);
+
+      textSize(12);
+      text(txt, buttonX, buttonY + 5);
+      float x1 = buttonX - (textWidth(txt)/2);
+      float x2 = buttonX + (textWidth(txt)/2);
+      line (x1, buttonY + 8, x2, buttonY + 8);
+    }
   }
 
   void update() {
@@ -53,5 +71,9 @@ class Button {
 
   boolean getHover() {
     return btnIsHover;
+  }
+
+  void setButtonTxt(String t) {
+    txt = t;
   }
 }
