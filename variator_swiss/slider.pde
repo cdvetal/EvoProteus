@@ -3,12 +3,12 @@ String operatorValue;
 Slider [] hs = new Slider [5];
 
 class Slider {
-  int swidth, sheight;    // width and height of bar
-  float xpos, ypos;       // x and y position of bar
-  float spos, newspos;    // x position of slider
-  float sposMin, sposMax; // max and min values of slider
-  int loose;              // how loose/heavy
-  boolean over;           // is the mouse over the slider?
+  int swidth, sheight;    //--> width and height of bar
+  float xpos, ypos;       //--> x and y position of bar
+  float spos, newspos;    //--> x position of slider
+  float sposMin, sposMax; //--> max and min values of slider
+  int loose;              //--> how loose/heavy
+  boolean over;           //--> is the mouse over the slider?
   boolean locked;
   float ratio;
   float value = 0;
@@ -121,7 +121,7 @@ void createSliders (Slider [] hs) {
 
     if (i == 0) {
       min = 0;
-      max = 16;
+      max = 21;
       operator = "Population Size";
       type = true;
     } else if (i == 1) {

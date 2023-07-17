@@ -1,10 +1,10 @@
 /**
  
- Towards Automated Generative Design, Variator version 1.4
+ Towards Automated Generative Design, Variator version 1.5
  Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
- Last feature: Fitness score based on position (10th july)
+ Last feature: Choose witch parameters to evolve within the parameter scope (16th july)
  --------------
- A. Main system
+ A. Main system (grid display version)
  --------------
  User guide
  1.  Create a sketch in processing;
@@ -38,11 +38,12 @@ void setup() {
 
   background(0);
 
+  //------------------------------------------------> Info. on system process pid (debug)
   systemID = int(ProcessHandle.current().pid());
   systemIDtoText = str(systemID);
   println("System ID: " + systemIDtoText);
 
-  //------------------------------------------------> Interface buttons
+  //------------------------------------------------> Interface buttons and sliders
   btnTxt[0] = "Create population";
   btnTxt[1] = "Indiv. missing? Press here";
   btnTxt[2] = "Run original sketch";
@@ -50,7 +51,7 @@ void setup() {
   btnHeight = height * 0.9;
   b[0] = new Button(width/2, btnHeight - 10, 200, 40, btnTxt[0], 1); // --> Creates menu buttons
   b[1] = new Button(width/2, btnHeight + 28, 200, 40, btnTxt[1], 2); // --> Creates menu buttons
-  b[2] = new Button(width/2, btnHeight + 58, 200, 40, btnTxt[2], 2); // --> Creates menu buttons
+  b[2] = new Button(width/2, btnHeight + 54, 200, 40, btnTxt[2], 2); // --> Creates menu buttons
 
   createSliders(hs);
 
@@ -65,11 +66,14 @@ void draw() {
 
   background(0);
   //------------------------------------------------> Interface
-  titleElements(font, groteskSemi, 24, "Evolving 1.4", 35);
-  titleElements(font, groteskRegular, 14, "Generation " + pop.getGenerations() + ".", height * 0.84);
+  h1(font, groteskSemi, 24, "Variator 1.5", 35);
+  //---------------
+  h1(font, groteskRegular, 14, "Generation " + pop.getGenerations() + ".", height * 0.84);
+  //---------------
   elements(font, groteskRegular, 14, "Fitness Score", width/2, 70);
-
+  //---------------
   sectionLine(height * 0.39);
+  //---------------
   elements(font, groteskRegular, 14, "Genetic Operators", width/2, height * 0.42);
 
   for (Button button : b) {
@@ -89,20 +93,20 @@ void draw() {
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
 
     screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
-    titleElements(font, groteskRegular, 12, screenFitness [i], 100 + 20*i);
+    h1(font, groteskRegular, 12, screenFitness [i], 100 + 20*i);
 
     if (rawFitness != null) {
       float fitness = float(rawFitness);
-      pop.getIndiv(i).setFitness(fitness);
+      pop.getIndiv(i).setFitness(fitness); //--> Assign fitness score to each indiv.
     }
   }
 
   //------------------------------------------------> Communication between sketches
-  sketches.listenStatus();
-  //sketches.serverPrint();
-  sketches.serverFitness();
+  sketches.listenMain();
   sketches.sketchesLocation();
+  sketches.serverFitness();
 
+  //------------------------------------------------> Genetic operators dynamic assignment
   populationSize = int(hs[0].getOperatorValue());
   eliteSize = int(hs[1].getOperatorValue());
   tournamentSize = int(hs[2].getOperatorValue());
@@ -119,6 +123,7 @@ void mouseReleased() {
   for (int g  = 0; g < b.length; g++) {
 
     if (b[g].getHover()) {
+      //------------------------------------------------> Evolution button
       if (g == 0) {
         if (buttonCounter == 0) {
           pop.initialize();
@@ -146,9 +151,13 @@ void mouseReleased() {
           exitSketch = "1";
           println("-------------");
         }
-      } else if (g == 1) {
+      } 
+      //------------------------------------------------> Debug button
+      else if (g == 1) {
         pop.reRenderIndiv();
-      } else if (g == 2) {
+      } 
+      //------------------------------------------------> Run org. button
+      else if (g == 2) {
         int tabIndex = matcher(path, "/");
         String str = path.substring(0, tabIndex);
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
@@ -162,7 +171,7 @@ void exit() {
   exitSketch = "2";
   sketches.serverShutdown();
   thread("exitDelay");
-  //IDEIA (quando fecha os sistema, abrir pasta com as populações exportadas)
+  //$$[Further development here] On exit, opens folder with exported pop(s).
 }
 
 void exitDelay() {

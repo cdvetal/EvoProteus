@@ -90,12 +90,11 @@ class Population {
       m.setGrid();//--> Display population on-screen
       m.injectorA(indivCounter);
       m.injectorB(ancestors[i].genes.valueArray());
-      //println(newGeneration[i].genes.valueArray());
       m.popExport(indivCounter);
 
       indivCounter++;
       counter++;
-      inputSketch=original; //--> Reset injection A (avoid overwride)
+      inputSketch=original; //--> Reset injection A (avoid overwrite)
     }
   }
 

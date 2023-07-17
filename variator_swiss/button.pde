@@ -2,7 +2,7 @@
 Button [] b = new Button [3];
 
 float btnHeight = 625; //--> First button yPos on screen
-String [] btnTxt = new String [3];
+String [] btnTxt = new String [3]; //--> Text for buttons
 
 
 class Button {
@@ -32,6 +32,7 @@ class Button {
     btnFont = createFont(path, 100);
     textFont(btnFont);
 
+    //------------------------------------------------> Button box
     if (version == 1) {
 
       strokeWeight(1.7); //--> Adjust the button stroke weight
@@ -42,12 +43,14 @@ class Button {
       textSize(14);
       setButtonTxt(btnTxt[0]);
       text(txt, buttonX, buttonY + 5);
-    } else if (version == 2) {
+    } 
+    //------------------------------------------------> Underlined button box
+    else if (version == 2) {
 
       strokeWeight(1); //--> Adjust the button stroke weight
       fill(btnIsHover ? 255 : 200);
 
-      textSize(12);
+      textSize(11);
       text(txt, buttonX, buttonY + 5);
       float x1 = buttonX - (textWidth(txt)/2);
       float x2 = buttonX + (textWidth(txt)/2);

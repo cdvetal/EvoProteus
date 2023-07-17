@@ -207,7 +207,7 @@ class Main {
     // --> Client-Server injection code entries
     String injectedBegin = "import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread(\"exitDelay\");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();int pid;String pidT;//Injected line";
     String injectedSetup = "clientSketches = new Client(this, \"localhost\", 3000 + " + counter + ");pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write(\"0\" + \" \" + sketch + \" \" + pidT);surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");//Injected line";
-    String injectedDraw  = "java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(\"1\" + \" \" + sketch + \" \" + listener + \" \" + p.x + \" \" + p.y);if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//Injected line";
+    String injectedDraw  = "java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(\"1\" + \" \" + sketch + \" \" + listener + \" \" + p.x + \" \" + p.y + \" \");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//Injected line";
 
 
     for (int q=0; q<inputSketch.length; q++) {
@@ -307,8 +307,6 @@ class Main {
       } else {
         Process v = exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
         process.add(v);
-
-        //println(process);
       }
     }
     //println(nf(popCounter, 3));
@@ -325,7 +323,7 @@ class Main {
     for (int l = 0; l < populationSize; ++l) {
       execSketches.append("indiv_"+nf(l, 3));
     }
-    
+
     for (String str : execSketches) {
       boolean found = false;
       for (String str2 : sketchesName) {

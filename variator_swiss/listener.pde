@@ -14,44 +14,45 @@ String exitSketch = "1"; //--> Sent to each phenotype for 'extinguish' purposes
 HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Window info. for fitness score
 
 void serverOpen() {
-  /*Iniciar o programa e criar um servidor, modelo baseado em multicast*/
-  /*Multicast*/
+  /*$$[Further development here] Multicast based model on server assignment instead of one server per client*/
   serverSketches.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
-  //println(servers);
 }
 
 int sketchW, sketchH;
 
-float fitnessSub = 0;
+float fitnessSub = 0; //--> Stores fitness score based on sketch location
 
-StringList sketchesName = new StringList();
+StringList sketchesName = new StringList(); //--> Stores sketchesName (debug)
 
 class Listener {
 
-  HashMap<String, int[]> positions = new HashMap<>();
+  HashMap<String, float[]> positions = new HashMap<>();
 
   int screenW = Toolkit.getDefaultToolkit().getScreenSize().width; //--> Not used for now!
   int screenH = Toolkit.getDefaultToolkit().getScreenSize().height; //--> Not used for now!
 
-  String indiv, fScore;
+  String indiv, fScore = "1.0";
 
 
-  //------------------------------------------------> Listens window status for each individual
-  void listenStatus() {
+  //------------------------------------------------> Listens valuable info. from each individual
+  void listenMain() {
     for (int i = 0; i < serverSketches.size(); i++) {
       clientSketches = serverSketches.get(i).available();
 
       if (clientSketches != null) {
+
         String input = clientSketches.readString().trim();
         try {
           String[] params = input.split(" ");
           if (params[0].equals("1")) {
-            String sketchName = params[1];
-            int status = int(params[2]);
-            int x = int(params[3]);
-            int y = int(params[4]);
-            windowStatus.put(sketchName, status);
-            positions.put(sketchName, new int[]{x, y});
+
+            String sketchName = params[1]; //--> Sketches name
+            int status = int(params[2]); //--> Window status (open/closed)
+            float x = float(params[3]); //--> X-position on-screen
+            float y = float(params[4]); //--> Y-position on-screen
+
+            windowStatus.put(sketchName, status); //--> Stores status
+            positions.put(sketchName, new float[]{x, y, fitnessSub}); //--> Stores positions
           }
           if (params[0].equals("0")) {
 
@@ -64,7 +65,6 @@ class Listener {
               healthySketchesID.append(params[2]);
               println(params[1] + " rendered." + " ID: " + params[2]);
             }
-            //println(params[1]);
           }
         }
         catch(Exception exc) {
@@ -80,20 +80,15 @@ class Listener {
       float difW = screenW - sketchW;
       float difY = screenH - sketchH;
 
-      int [] pos = positions.get(value);
-      float xPos =  map(pos[0], 0, difW, 0, 1);
-      float yPos =  map(pos[1], 23, difY - 23, 0, 1);
-
-      if (xPos >= 0 && xPos <= 1 && yPos <= 0.5) {
-        //println(value + "seems nice - " + "x:" + pos[0] + " y:" + pos[1]);
-      }
+      float [] pos = positions.get(value);
 
       if (pos[0] <= 0) {
-        fitnessSub = map(pos[0], 0, -sketchW, 0, 1);
+        pos[2] = map(pos[0], 0, -sketchW, 0, 1);
       } else if (pos[0] >= difW) {
-        fitnessSub = map(pos[0], difW, screenW, 0, 1);
+        pos[2] = map(pos[0], difW, screenW, 0, 1);
       } else if (pos[1] >= difY) {
-        fitnessSub = map(pos[1], difY, screenH, 0, 1);
+        pos[2] = map(pos[1], difY, screenH, 0, 1);
+      } else {
       }
     }
   }
@@ -107,16 +102,21 @@ class Listener {
 
     StringDict info = new StringDict();
 
-    for (Map.Entry me : windowStatus.entrySet()) {
-      indiv  = me.getKey().toString();
-      fScore = me.getValue().toString();
-      /*float x = float(fScore);
-       if (x == 1) {
-       x -= fitnessSub;
-       fScore = str(x);
-       }*/
-      info.set(indiv, fScore);
+    for (Map.Entry<String, float[]> entry : positions.entrySet()) {
+      indiv  = entry.getKey().toString();
+      float[] pos = entry.getValue();
+
+      for (Map.Entry me : windowStatus.entrySet()) {
+        if (me.getValue().toString().equals("0")) {
+          fScore = "0.00";
+          info.set(me.getKey().toString(), fScore);
+        } else {
+          fScore = nf(1-pos[2], 0, 2);
+          info.set(indiv, fScore);
+        }
+      }
     }
+
     return info;
   }
 
@@ -136,7 +136,7 @@ class Listener {
   }
 }
 
-// --> Store current java processes method
+//------------------------------------------------> Stores current java processes method
 
 StringList getCurrentJavaProcesses() throws Exception {
 

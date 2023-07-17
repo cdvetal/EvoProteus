@@ -73,7 +73,6 @@ void setup() {
     }
 
     hs[i] = new Slider(40 + (150 * i), height/2, 125, 2, 3, min, max, operator, type);
-    sliderHeight += 60;
   }
 }
 
@@ -103,7 +102,9 @@ void draw() {
 }
 
 void mousePressed() {
-   
+  if (!firstMousePress) {
+    firstMousePress = true;
+  }
 }
 
 class Slider {

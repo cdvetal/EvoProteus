@@ -4,8 +4,8 @@ String[] fontList = PFont.list();
 String groteskSemi = fontList[min(2582, fontList.length - 1)];
 String groteskRegular  = fontList[min(2581, fontList.length - 1)];
 
-// --> Title elements method
-void titleElements (PFont typeface, String fontPath, int size, String text, float yPos) {
+// --> Title elements (h1) method
+void h1 (PFont typeface, String fontPath, int size, String text, float yPos) {
   typeface = createFont(fontPath, 100);
   fill(200);
   textAlign(CENTER);
