@@ -31,7 +31,7 @@ ArrayList <Genotype> genotype = new ArrayList<Genotype>();
 
 void setup() {
 
-  size(250, 825);
+  size(275, 825);
   int w = displayWidth - width;
   int h = displayHeight - height;
   surface.setLocation(w - width/8, h/2);
@@ -53,6 +53,8 @@ void setup() {
   b[1] = new Button(width/2, btnHeight + 28, 200, 40, btnTxt[1], 2); // --> Creates menu buttons
   b[2] = new Button(width/2, btnHeight + 54, 200, 40, btnTxt[2], 2); // --> Creates menu buttons
 
+  t = new ToggleButton(width/12 + 15, 65.5);
+
   createSliders(hs);
 
   //------------------------------------------------> Uploads PDE skecthes
@@ -69,12 +71,49 @@ void draw() {
   h1(font, groteskSemi, 24, "Variator 1.5", 35);
   //---------------
   h1(font, groteskRegular, 14, "Generation " + pop.getGenerations() + ".", height * 0.84);
-  //---------------
-  elements(font, groteskRegular, 14, "Fitness Score", width/2, 70);
+
+  //------------------------------------------------> Displays parameters
+  if (isToggled) {
+
+    elements(font, groteskRegular, 14, "Parameters", width/2, 70);
+    int i = 0;
+    for (pamRefined pam : pamRefined) {
+      String parameterText = pam.name.substring(2);
+      textAlign(CORNER);
+      elements(font, groteskRegular, 12, parameterText, width/12, 100 + 20*i);
+      String [] ld = split(pam.limits, ' ');
+      //---------------> Interface design
+      String [] t1 = split(ld[0], ':');
+      String min = t1[0] + ": " + t1[1];
+      //---------------
+      String [] t2 = split(ld[1], ':');
+      String max = t2[0] + ": " + t2[1];
+      //---------------> Interface design
+      elements(font, groteskRegular, 12, min, width * 0.4, 100 + 20*i);
+      elements(font, groteskRegular, 12, max, width * 0.65, 100 + 20*i);
+      i++;
+    }
+    //------------------------------------------------> Displays fitness score
+  } else {
+    elements(font, groteskRegular, 14, "Fitness Score", width/2, 70);
+
+    String [] screenFitness = new String [populationSize];
+    
+    for (int i = 0; i < populationSize; i++) { //--> Fitness viz.
+      String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
+
+      screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
+      h1(font, groteskRegular, 12, screenFitness [i], 100 + 20*i);
+    }
+  }
   //---------------
   sectionLine(height * 0.39);
   //---------------
+  textAlign(CENTER);
   elements(font, groteskRegular, 14, "Genetic Operators", width/2, height * 0.42);
+
+  t.create();
+
 
   for (Button button : b) {
     button.update();
@@ -86,14 +125,10 @@ void draw() {
     hs[j].display();
   }
 
-  //------------------------------------------------> Fitness viz.
+  //------------------------------------------------> Fitness assignment.
   for (int i = 0; i < populationSize; i++) {
 
-    String [] screenFitness = new String [populationSize];
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
-
-    screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
-    h1(font, groteskRegular, 12, screenFitness [i], 100 + 20*i);
 
     if (rawFitness != null) {
       float fitness = float(rawFitness);
@@ -115,6 +150,8 @@ void draw() {
 }
 
 void mouseReleased() {
+
+  t.isHover();
 
   if (!firstMousePress) {
     firstMousePress = true;
@@ -151,11 +188,11 @@ void mouseReleased() {
           exitSketch = "1";
           println("-------------");
         }
-      } 
+      }
       //------------------------------------------------> Debug button
       else if (g == 1) {
         pop.reRenderIndiv();
-      } 
+      }
       //------------------------------------------------> Run org. button
       else if (g == 2) {
         int tabIndex = matcher(path, "/");

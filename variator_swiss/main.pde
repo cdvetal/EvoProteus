@@ -135,11 +135,11 @@ class Main {
 
     println("List of identified parameters:");
 
-    for (int g = 0; g<pamRefined.size(); g++) {
-      println(pamRefined.get(g).type);
-      println(pamRefined.get(g).name);
-      println(pamRefined.get(g).value);
-      println(pamRefined.get(g).limits);
+    for (pamRefined pam : pamRefined) {
+      println(pam.type);
+      println(pam.name);
+      println(pam.value);
+      println(pam.limits);
       println("-------------");
     }
   }
@@ -424,7 +424,7 @@ class Main {
 
   void setGrid() {
 
-    if (counterGridX == 4) {
+    if (counterGridX == 5) {
       counterGridX = 0;
       counterGridY += 1;
     }
