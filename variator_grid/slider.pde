@@ -3,7 +3,7 @@ String operatorValue;
 Slider [] hs = new Slider [5];
 
 class Slider {
-  int swidth, sheight;    //--> width and height of bar
+  float swidth, sheight;    //--> width and height of bar
   float xpos, ypos;       //--> x and y position of bar
   float spos, newspos;    //--> x position of slider
   float sposMin, sposMax; //--> max and min values of slider
@@ -20,10 +20,10 @@ class Slider {
 
   PFont fontSlider;
 
-  Slider (float xp, float yp, int sw, int sh, int l, float vm, float vM, String op, boolean t) {
+  Slider (float xp, float yp, float sw, float sh, int l, float vm, float vM, String op, boolean t) {
     swidth = sw;
     sheight = sh;
-    int widthtoheight = sw - sh;
+    float widthtoheight = sw - sh;
     ratio = (float)sw / (float)widthtoheight;
     xpos = xp;
     ypos = yp - sheight/2;
@@ -72,7 +72,7 @@ class Slider {
   }
 
   void display() {
-    fontSlider = createFont(groteskRegular, 300);
+    fontSlider = createFont(textType, 300);
     noStroke();
     fill(200);
     rect(xpos, ypos, swidth, sheight);
@@ -112,7 +112,7 @@ class Slider {
 
 void createSliders (Slider [] hs) {
 
-  float yPos = height * 0.47;
+  float yPos = height * 0.52;
 
   for (int i = 0; i < hs.length; i++) {
     float min = 0, max = 0;
@@ -146,7 +146,7 @@ void createSliders (Slider [] hs) {
       type = false;
     }
 
-    hs[i] = new Slider(width/2, yPos, 125, 2, 3, min, max, operator, type);
+    hs[i] = new Slider(width/2, yPos, 125, 1.6, 3, min, max, operator, type);
     yPos+=60; // --> Set distance between sliders
   }
 }

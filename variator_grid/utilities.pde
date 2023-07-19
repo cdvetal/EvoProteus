@@ -1,8 +1,24 @@
+
+
 // ------------------> Interface font config.
 PFont font;
 String[] fontList = PFont.list();
-String groteskSemi = fontList[min(2582, fontList.length - 1)];
-String groteskRegular  = fontList[min(2581, fontList.length - 1)];
+String h1Type, textType, notesType;
+
+// --> Method to choose a typeface
+int chooseType(String t) {
+  int i = 0;
+  
+  for (String type : fontList) {
+    if (type.equals(t)) break;
+    if (i >= fontList.length-1) {
+      i = 1;
+      break;
+    }
+    i++;
+  }
+  return i;
+}
 
 // --> Title elements (h1) method
 void h1 (PFont typeface, String fontPath, int size, String text, float yPos) {
@@ -26,7 +42,7 @@ void elements (PFont typeface, String fontPath, int size, String text, float xPo
 void sectionLine(float y) {
 
   stroke (255);
-  strokeWeight(1.7); //--> Adjust the button stroke weight
+  strokeWeight(1.4); //--> Adjust the button stroke weight
   line (width/12, y, width - width/12, y);
 }
 
@@ -64,7 +80,7 @@ class ToggleButton {
     //--> Draws the switch body
     noFill();
     stroke(200);
-    strokeWeight(1.7); //--> Adjust the button stroke weight
+    strokeWeight(1.4); //--> Adjust the button stroke weight
     rect(posX, posY, sWidth, sHeight, sHeight/2);
 
     //--> Smoothly transition the indicator position
@@ -107,7 +123,7 @@ class CircleButton {
 
   void create () {
 
-    strokeWeight(1.7); //--> Adjust the button stroke weight
+    strokeWeight(1.4); //--> Adjust the button stroke weight
     stroke(200);
     noFill();
     if (clicked == 1) {
