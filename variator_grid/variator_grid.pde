@@ -29,6 +29,8 @@ int buttonCounter = 0; // --> count each click on evolution button
 Population pop;
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
 
+StringList updateParams = new StringList(); // --> Updates evolving parameters list
+
 
 void setup() {
 
@@ -37,16 +39,20 @@ void setup() {
   int h = displayHeight - height;
   surface.setLocation(w - width/8, h/2);
 
+  background(0);
+
+  //------------------------------------------------> Sets three typefaces for the interface design (searching through the fontList)
   h1Type    = fontList[chooseType("Anthony")];
   textType  = fontList[chooseType("SpaceGrotesk-Regular")];
   notesType = fontList[chooseType("SpaceGrotesk-Regular")];
 
-  background(0);
-
   //------------------------------------------------> Info. on system process pid (debug)
-  systemID = int(ProcessHandle.current().pid());
-  systemIDtoText = str(systemID);
-  println("System ID: " + systemIDtoText);
+  /**
+   systemID = int(ProcessHandle.current().pid());
+   systemIDtoText = str(systemID);
+   println("System ID: " + systemIDtoText);
+   //not in use
+   */
 
   //------------------------------------------------> Interface buttons and sliders
   btnTxt[0] = "Create population";
@@ -60,11 +66,12 @@ void setup() {
 
   t = new ToggleButton(width/12 + 15, 101); //--> Toggle Button between Fitness and Parameters
 
-  createSliders(hs);
+  createSliders(hs); //--> Sliders / Genetic operators
 
-  //------------------------------------------------> Uploads PDE skecthes
+  //------------------------------------------------> Uploads your PDE sketchfile
   selectInput("Select a file to process:", "fileSelected");
 
+  //------------------------------------------------> Sets a population to evolve
   pop = new Population();
 }
 
@@ -72,14 +79,15 @@ void setup() {
 void draw() {
 
   background(0);
+
   //------------------------------------------------> Interface
-  h1(font, h1Type, 34, "Ex-Machina", 40);
-  //---------------
-  if (dist(mouseX, mouseY, width/2, 70) < 50) {
-    h1(font, textType, 14, "Generation " + pop.getGenerations() + ".", 70);
-  } else {
-    h1(font, h1Type, 20, "Generation " + pop.getGenerations() + ".", 70); //height * 0.83
-  }
+  h1(font, h1Type, 34, "Ex-Machina", 40); //--> Title
+
+  String type = (dist(mouseX, mouseY, width/2, 70) < 50) ? textType : h1Type;
+  int f = (dist(mouseX, mouseY, width/2, 70) < 50) ? 14 : 22;
+  h1(font, type, f, "Generation " + pop.getGenerations() + ".", 70); //--> No. Generations
+
+  t.create(); //--> Renders toggle button
 
   //------------------------------------------------> Displays parameters
   if (!isToggled) {
@@ -88,6 +96,7 @@ void draw() {
     int i = 0;
     for (pamRefined pam : pamRefined) {
       String parameterText = pam.name.substring(2);
+
       textAlign(CORNER);
 
       String [] ld = split(pam.limits, ' ');
@@ -98,18 +107,18 @@ void draw() {
       String [] t2 = split(ld[1], ':');
       String max = t2[0] + ": " + t2[1];
       //---------------> Interface design
-      isClicked.append(1);
-      cb.add(new CircleButton(width - width/12 - 5, 130 + 25*i, isClicked.get(i)));
       cb.get(i).create();
 
+      int pamColor = cb.get(i).getClicked() == 0 ? 100 : 200;
+      elements(font, textType, 12, parameterText, width/12, 135 + 25*i, pamColor);
+      elements(font, textType, 12, min, width * 0.4, 135 + 25*i, pamColor);
+      elements(font, textType, 12, max, width * 0.65, 135 + 25*i, pamColor);
+
+      //------------------------------------------------> Updates variable parameters list based on user interaction
       if (cb.get(i).getClicked() == 0) {
-        elements(font, textType, 12, parameterText, width/12, 135 + 25*i, 100);
-        elements(font, textType, 12, min, width * 0.4, 135 + 25*i, 100);
-        elements(font, textType, 12, max, width * 0.65, 135 + 25*i, 100);
+        updateParams.set(i, str(i)); // --> Stores off parameter index
       } else {
-        elements(font, textType, 12, parameterText, width/12, 135 + 25*i, 200);
-        elements(font, textType, 12, min, width * 0.4, 135 + 25*i, 200);
-        elements(font, textType, 12, max, width * 0.65, 135 + 25*i, 200);
+        if (str(i).equals(updateParams.get(i))) updateParams.set(i, "a");
       }
       i++;
     }
@@ -125,14 +134,10 @@ void draw() {
       if (i<10) h1(font, textType, 12, screenFitness [i], 135 + 25*i);
     }
   }
-  //---------------
+
   sectionLine(height * 0.47);
-  //---------------
-  textAlign(CENTER);
-  //elements(font, textType, 14, "Genetic Operators", width/2, height * 0.42, 200);
 
-  t.create();
-
+  //------------------------------------------------> Renders buttons
   int inc = 0;
   for (Button button : b) {
 
@@ -146,6 +151,7 @@ void draw() {
     inc++;
   }
 
+  //------------------------------------------------> Renders sliders
   for (int j = 0; j < hs.length; j++) {
     hs[j].update();
     hs[j].display();
@@ -177,22 +183,22 @@ void draw() {
 
 void mouseReleased() {
 
-  t.isHover();
+  t.isHover(); //--> Checks toggle button state
 
-  for (CircleButton c : cb) {
+  for (CircleButton c : cb) { //--> Checks each param. button state
     c.isClicked();
   }
 
-
-  if (!firstMousePress) {
+  if (!firstMousePress) { //--> Sliders need it
     firstMousePress = true;
   }
 
   for (int g  = 0; g < b.length; g++) {
 
     if (b[g].getHover()) {
-      //------------------------------------------------> Evolution button
+      //------------------------------------------------> 1. Main button
       if (g == 0) {
+        //------------------------------------------------> 1.1 Initialize (1)
         if (buttonCounter == 0) {
           pop.initialize();
           pop.renderPop();
@@ -201,8 +207,19 @@ void mouseReleased() {
           delay(1000);
           btnTxt[0] = "Next Generation";
           println("-------------");
+          //---------------
+          for (int a = 0; a < pamRefined.size(); a++) { //--> Initializes updateParams list
+            updateParams.append("a");
+          }
+          //---------------
+          for (int p = 0; p < pamRefined.size(); p++) {
+            isClicked.append(1);
+            cb.add(new CircleButton(width - width/12 - 5, 130 + 25*p, isClicked.get(p)));
+          }
         } else {
+          //------------------------------------------------> 1.2 Next Generation (2 - )
           delay(1000);
+          //---------------> Clears debug information
           sketchesName.clear();
           healthySketchesID.clear();
           zombieSketch.clear();
@@ -212,7 +229,7 @@ void mouseReleased() {
 
           pop.evolve();
           pop.renderPop();
-          indivCounter=0;
+          indivCounter = 0;
 
           exitSketch = "2";
           sketches.serverShutdown();
@@ -220,11 +237,11 @@ void mouseReleased() {
           println("-------------");
         }
       }
-      //------------------------------------------------> Debug button
+      //------------------------------------------------> 2. Debug button
       else if (g == 1) {
         pop.reRenderIndiv();
       }
-      //------------------------------------------------> Run org. button
+      //------------------------------------------------> 3. Run org. button
       else if (g == 2) {
         int tabIndex = matcher(path, "/");
         String str = path.substring(0, tabIndex);

@@ -1,6 +1,10 @@
+/**
+    5. Population constructor
+*/
+
 import java.util.*; //--> Needed to sort arrays
 
-//------------------------------------------------> Genetic operators
+//------------------------------------------------> Genetic operators init.
 int populationSize = 1;
 float mutationRate = 0.3;
 float crossoverRate = 0.7;
@@ -41,12 +45,12 @@ class Population {
     }
 
     for (int i = 0; i < populationSize; i++) {
-      ancestors[i]=genotype.get(i);
+      ancestors[i] = genotype.get(i);
     }
   }
 
   void evolve() {
-    
+
     Genotype [] newGeneration = new Genotype[genotype.size()]; //--> (Note) Genotype is an extraction of the genetic code of each initial individual
 
     //------------------------------------------------> Sort individuals by fitness
@@ -69,17 +73,23 @@ class Population {
         newGeneration[i] = tournamentSelection().getCopy();
       }
 
-      //println("Population 0, " + "Individual "+i+" :" + genotype.get(i).genes);
+      //--> println("Population 0, " + "Individual " + i + " :" + genotype.get(i).genes);
     }
 
     //------------------------------------------------> Mutate new individuals
     for (int i = eliteSize; i < populationSize; i++) {
       newGeneration[i].mutate();
-      //println("Population 1, " + "Individual "+i+" :" + newGeneration[i].genes);
+      //--> println("Population 1, " + "Individual "+ i +" :" + newGeneration[i].genes);
     }
 
     for (int i = 0; i < populationSize; i++) {
+      
+      newGeneration[i].updateGeneList(ancestors[i]);
+      //--> println("Genotype " + i + " - Instance 1: " + ancestors[i].getGenes());
+      //println("---------");
       ancestors[i] = newGeneration[i];
+      //--> println("Genotype " + i + " - Instance 2: " + ancestors[i].getGenes());
+      //println("---------");
     }
 
     popCounter++;
@@ -138,7 +148,6 @@ class Population {
     try {
       StringList javaProcesses = new StringList();
       javaProcesses = getCurrentJavaProcesses();
-
       m.zombieDetector(sketchesName, javaProcesses);
     }
     catch (Exception e) {

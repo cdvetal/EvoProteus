@@ -1,3 +1,7 @@
+/**
+ 4. Main system (Parameters extraction & injection / export and run)
+ */
+
 //------------------------------------------------> IntList of Sketch lines containing parameters
 IntList sketchLine = new IntList(); //--> Lines w/ identified parameters
 IntList sketchLineRefined = new IntList(); //--> Refined lines (no outliers)
@@ -40,6 +44,34 @@ int systemID;
 String systemIDtoText;
 
 StringList healthySketchesID = new StringList();
+
+// ------------------> ArrayList of Parameter objects
+ArrayList<Parameters> parameters = new ArrayList<Parameters>(); //--> Set of parameter extracted from first pop.
+
+class Parameters {
+  String type, name, value, limits;
+
+  Parameters(String t, String n, String v, String l) {
+    type=t;
+    name=n;
+    value=v;
+    limits=l;
+  }
+}
+
+// ------------------> ArrayList of Parameter objects
+ArrayList<pamRefined> pamRefined = new ArrayList<pamRefined>(); //--> Refined set (without outliers)
+
+class pamRefined {
+  String type, name, value, limits;
+
+  pamRefined(String t, String n, String v, String l) {
+    type=t;
+    name=n;
+    value=v;
+    limits=l;
+  }
+}
 
 class Main {
 
@@ -309,7 +341,7 @@ class Main {
         process.add(v);
       }
     }
-    //println(nf(popCounter, 3));
+    //--> println(nf(popCounter, 3));
   }
 
   //------------------------------------------------> (10) Debugs stucked indiv.
@@ -384,7 +416,7 @@ class Main {
       catch (Exception e) {
       }
     } else {
-      //println("There's no zombie process.");
+      //--> println("There's no zombie process.");
     }
   }
 
@@ -416,7 +448,7 @@ class Main {
     sketchSize[0] = sizeW;
     sketchSize[1] = sizeH;
 
-    //println("sketchSize is:" + sketchSize[0] + " " + sketchSize[1]);
+    //--> println("SketchSize is:" + sketchSize[0] + " " + sketchSize[1]);
     return sketchSize;
   }
 

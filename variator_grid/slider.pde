@@ -1,3 +1,7 @@
+/**
+    1.2 Interface design implementation
+*/
+
 boolean firstMousePress = false;
 String operatorValue;
 Slider [] hs = new Slider [5];

@@ -1,14 +1,16 @@
+/**
+    1.3 Interface design implementation
+*/
 
-
-// ------------------> Interface font config.
+//------------------------------------------------> Interface font config.
 PFont font;
 String[] fontList = PFont.list();
 String h1Type, textType, notesType;
 
-// --> Method to choose a typeface
+//------------------------------------------------> Method to choose a typeface
 int chooseType(String t) {
   int i = 0;
-  
+
   for (String type : fontList) {
     if (type.equals(t)) break;
     if (i >= fontList.length-1) {
@@ -20,7 +22,7 @@ int chooseType(String t) {
   return i;
 }
 
-// --> Title elements (h1) method
+//------------------------------------------------> Title elements (h1) method
 void h1 (PFont typeface, String fontPath, int size, String text, float yPos) {
   typeface = createFont(fontPath, 100);
   fill(200);
@@ -30,7 +32,7 @@ void h1 (PFont typeface, String fontPath, int size, String text, float yPos) {
   text(text, width/2, yPos);
 }
 
-// --> Text elements method
+//------------------------------------------------> Text elements method
 void elements (PFont typeface, String fontPath, int size, String text, float xPos, float yPos, float eFill) {
   typeface = createFont(fontPath, 100);
   fill(eFill);
@@ -39,6 +41,7 @@ void elements (PFont typeface, String fontPath, int size, String text, float xPo
   text(text, xPos, yPos);
 }
 
+//------------------------------------------------> Section line
 void sectionLine(float y) {
 
   stroke (255);

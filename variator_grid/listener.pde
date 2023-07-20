@@ -1,3 +1,7 @@
+/**
+    3. Sockets implementation
+*/
+
 import processing.net.*; //--> Client-Server Network
 import java.awt.Toolkit; //--> Screen information
 import java.util.Map; //--> HashMap Library
@@ -28,14 +32,15 @@ class Listener {
 
   HashMap<String, float[]> positions = new HashMap<>();
 
-  int screenW = Toolkit.getDefaultToolkit().getScreenSize().width; //--> Not used for now!
-  int screenH = Toolkit.getDefaultToolkit().getScreenSize().height; //--> Not used for now!
+  int screenW = Toolkit.getDefaultToolkit().getScreenSize().width;
+  int screenH = Toolkit.getDefaultToolkit().getScreenSize().height;
 
   String indiv, fScore = "1.0";
 
 
   //------------------------------------------------> Listens valuable info. from each individual
   void listenMain() {
+    
     for (int i = 0; i < serverSketches.size(); i++) {
       clientSketches = serverSketches.get(i).available();
 

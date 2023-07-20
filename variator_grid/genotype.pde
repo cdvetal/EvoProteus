@@ -1,3 +1,7 @@
+/**
+    2. Genotype constructor
+*/
+
 int genCounter = -1;
 int numGenes = 0;
 
@@ -18,7 +22,6 @@ class Genotype {
     genes.set(t, v);
     genesMin.append(min);
     genesMax.append(max);
-    //println("original:" + genes);
     numGenes++;
   }
 
@@ -42,26 +45,26 @@ class Genotype {
         childGenes[i] = genes.get(keysList[i]);
         child.genesMin.set(i, genesMin.get(i));
         child.genesMax.set(i, genesMax.get(i));
-        //println("parent 1 Genes " + childGenes[i]);
+        //println("Parent 1 Genes: " + childGenes[i]);
       } else {
-        //println("crossover point <-");
+        //println("-> cut point <-");
         childGenes[i] = parentGenes.get(keysList[i]);
         child.genesMin.set(i, parent.genesMin.get(i));
         child.genesMax.set(i, parent.genesMax.get(i));
-        //println("parent 2 Genes " + parentGenes.get(keysList[i]));
+        //println("Parent 2 Genes: " + parentGenes.get(keysList[i]));
       }
 
       child.genes.set(keysList[i], childGenes[i]);
     }
 
-    //println(" Boundaries " + child.genesMin + " " + child.genesMax);
+    //println("Boundaries: " + child.genesMin + " " + child.genesMax);
 
     return child;
   }
 
   void mutate() {
 
-    //println("Boundaries on mutate " + genesMin + " " + genesMax);
+    //--> println("Boundaries for mutation: " + genesMin + " " + genesMax);
     keysList = genes.keyArray();
 
     for (int i = 0; i < genes.size(); i++) {
@@ -69,7 +72,7 @@ class Genotype {
       if (random(1) <= mutationRate) {
 
         String keyType = keysList[i].substring(1, keysList[i].length());
-        
+
         float min = float(genesMin.get(i));
         float max = float(genesMax.get(i));
 
@@ -81,34 +84,32 @@ class Genotype {
         if (keyType.equals(primitives[1])) { //--> Mutate floats
           float mutation = constrain(newValue, min, max);
           genes.set(keysList[i], str(mutation));
-          //println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          //--> println(keyType + " Current: " + current + " mutatedValue: " + mutation);
           println("");
         } else if (keyType.equals(primitives[2])) { //--> Mutate ints
           int mutation = int(constrain(newValue, min, max));
           genes.set(keysList[i], str(mutation));
-          //println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          //--> println(keyType + " Current: " + current + " mutatedValue: " + mutation);
           println("");
         } else if (keyType.equals(primitives[4])) { //--> Mutate booleans
           boolean mutation =   random(2) > 1;
           genes.set(keysList[i], str(mutation));
-          //println(keyType + " current: " + current + " mutatedValue: " + mutation);
+          //--> println(keyType + " Current: " + current + " mutatedValue: " + mutation);
           println("");
         }
       }
     }
   }
 
-  //--> Set the fitness value
   void setFitness(float fitness) {
     this.fitness = fitness;
   }
 
-  //--> Get the fitness value
   float getFitness() {
     return fitness;
   }
 
-  //--> Get a clean copy
+  //------------------------------------------------> Gets a clean copy
   Genotype getCopy() {
     Genotype copy = new Genotype(genes);
     copy.fitness = fitness;
@@ -119,5 +120,19 @@ class Genotype {
 
   StringDict getGenes() {
     return genes;
+  }
+
+  //------------------------------------------------> Genotype update based on user feedback regarding variable parameters list
+  Genotype updateGeneList(Genotype previous) {
+
+    Genotype updated = new Genotype(genes);
+    StringDict previousGenes = previous.getGenes();
+
+    for (int i = 0; i < genes.size(); ++i) {
+      if (str(genes.keyArray()[i].charAt(0)).equals(updateParams.get(i))) {
+        updated.genes.set(keysList[i], previousGenes.get(keysList[i]));
+      }
+    }
+    return updated;
   }
 }
