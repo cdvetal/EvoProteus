@@ -1,6 +1,6 @@
 /**
-    1.1 Interface design implementation
-*/
+ 1.1 Interface design implementation
+ */
 
 //------------------------------------------------> Buttons
 Button [] b = new Button [3];
@@ -28,7 +28,7 @@ class Button {
 
   void create(PFont btnFont, String path) {
 
-    stroke(255);
+    stroke(colorStrokes);
 
     rectMode(CENTER);
     textAlign(CENTER);
@@ -40,19 +40,19 @@ class Button {
     if (version == 1) {
 
       strokeWeight(1.4); //--> Adjust the button stroke weight
-      fill(btnIsHover ? 255 : 0);
+      fill(btnIsHover ? colorOnHover : colorBg);
       rect(buttonX, buttonY, buttonW, buttonH);
 
-      fill(btnIsHover ? 0 : 200);
-      textSize(14);
+      fill(btnIsHover ? colorBg : colorLetters);
+      textSize(18);
       setButtonTxt(btnTxt[0]);
       text(txt, buttonX, buttonY + 5);
-    } 
+    }
     //------------------------------------------------> Underlined button box
     else if (version == 2) {
 
       strokeWeight(0.5); //--> Adjust the button stroke weight
-      fill(btnIsHover ? 255 : 200);
+      fill(btnIsHover ? colorOnHover : colorStrokes);
 
       textSize(10.5);
       text(txt, buttonX, buttonY + 5);

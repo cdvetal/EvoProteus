@@ -31,7 +31,7 @@ class Slider {
     ratio = (float)sw / (float)widthtoheight;
     xpos = xp;
     ypos = yp - sheight/2;
-    spos = xpos - swidth/2.4; //CHANGE STARTING VALUES HERE RECOMMENDED xpos - swidth/4
+    spos = xpos - swidth/4; //--> Changes starting values (recommended xpos - swidth/4)
     newspos = spos;
     sposMin = xpos - swidth/2;
     sposMax = xpos + swidth/2;
@@ -78,13 +78,13 @@ class Slider {
   void display() {
     fontSlider = createFont(textType, 300);
     noStroke();
-    fill(200);
+    fill(colorStrokes);
     rect(xpos, ypos, swidth, sheight);
 
     if (over || locked) {
-      fill(255);
+      fill(colorOnHover);
     } else {
-      fill(200);
+      fill(colorStrokes);
     }
 
     value = map(spos, sposMin, sposMax, vMin, vMax);

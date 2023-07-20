@@ -2,6 +2,13 @@
     1.3 Interface design implementation
 */
 
+//------------------------------------------------> Colours config.
+int colorLetters = 200;
+int colorBg = 10;
+int colorStrokes = 200;
+int colorOnHover = 255;
+int colorOff = 80;
+int colorPams = 0;
 //------------------------------------------------> Interface font config.
 PFont font;
 String[] fontList = PFont.list();
@@ -25,7 +32,7 @@ int chooseType(String t) {
 //------------------------------------------------> Title elements (h1) method
 void h1 (PFont typeface, String fontPath, int size, String text, float yPos) {
   typeface = createFont(fontPath, 100);
-  fill(200);
+  fill(colorLetters);
   textAlign(CENTER);
   textFont(typeface);
   textSize(size);
@@ -44,7 +51,7 @@ void elements (PFont typeface, String fontPath, int size, String text, float xPo
 //------------------------------------------------> Section line
 void sectionLine(float y) {
 
-  stroke (255);
+  stroke (colorStrokes);
   strokeWeight(1.4); //--> Adjust the button stroke weight
   line (width/12, y, width - width/12, y);
 }
@@ -82,7 +89,7 @@ class ToggleButton {
 
     //--> Draws the switch body
     noFill();
-    stroke(200);
+    stroke(colorStrokes);
     strokeWeight(1.4); //--> Adjust the button stroke weight
     rect(posX, posY, sWidth, sHeight, sHeight/2);
 
@@ -93,7 +100,7 @@ class ToggleButton {
 
     //--> Draws the toggle indicator
     noStroke();
-    fill(200);
+    fill(colorStrokes);
     ellipse(moveX, posY, radius * 2, radius * 2);
   }
 
@@ -127,15 +134,15 @@ class CircleButton {
   void create () {
 
     strokeWeight(1.4); //--> Adjust the button stroke weight
-    stroke(200);
+    stroke(colorOff);
     noFill();
     if (clicked == 1) {
       ellipse(xPos, yPos, radius * 2, radius * 2);
-      push();
-      fill(200);
+
+      fill(colorLetters);
       noStroke();
       ellipse(xPos + 0.5, yPos + 0.5, radius, radius);
-      pop();
+
     } else {
       ellipse(xPos, yPos, radius * 2, radius * 2);
     }
@@ -161,3 +168,32 @@ class CircleButton {
 
 ArrayList <CircleButton> cb = new ArrayList<CircleButton>();
 IntList isClicked = new IntList();
+
+//------------------------------------------------> Creates a sun icon
+void sunIcon(float x, float y, float radius) {
+
+  stroke(colorStrokes);
+  strokeWeight(1.4);
+  
+  float angle = TWO_PI / 8;
+  ellipse(x, y, radius * 2, radius * 2);
+  
+  for (float a = 0; a < TWO_PI; a+=angle) {
+    float x1 = x + cos(a) * radius;
+    float y1 = y + sin(a) * radius;
+    float x2 = x + cos(a) * radius * 1.8;
+    float y2 = y + sin(a) * radius * 1.8;
+    line(x1, y1, x2, y2);
+  }
+}
+
+//------------------------------------------------> Creates a moon icon
+void moonIcon(float x, float y, float radius) {
+  
+  noStroke();
+  fill(255);
+  ellipse(x, y, radius * 2, radius*2);
+  fill(0);
+  ellipse(x - 4 , y, radius * 2, radius*2);
+
+}

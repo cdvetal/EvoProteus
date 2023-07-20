@@ -25,6 +25,7 @@ int counter=0; // --> label servers
 int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
 int buttonCounter = 0; // --> count each click on evolution button
+boolean iconDisplay = false;
 
 Population pop;
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
@@ -39,9 +40,10 @@ void setup() {
   int h = displayHeight - height;
   surface.setLocation(w - width/8, h/2);
 
-  background(0);
+  background(colorBg);
 
   //------------------------------------------------> Sets three typefaces for the interface design (searching through the fontList)
+  //h1Type    = fontList[chooseType("Rafale-BG")];
   h1Type    = fontList[chooseType("Anthony")];
   textType  = fontList[chooseType("SpaceGrotesk-Regular")];
   notesType = fontList[chooseType("SpaceGrotesk-Regular")];
@@ -59,10 +61,10 @@ void setup() {
   btnTxt[1] = "Indiv. missing? Press here";
   btnTxt[2] = "Run original sketch";
 
-  btnHeight = height * 0.9;
-  b[0] = new Button(width/2, btnHeight - 15, 175, 40, btnTxt[0], 1); // --> Creates menu buttons
-  b[1] = new Button(width/2, btnHeight + 28, 150, 20, btnTxt[1], 2); // --> Creates menu buttons
-  b[2] = new Button(width/2, btnHeight + 54, 100, 20, btnTxt[2], 2); // --> Creates menu buttons
+  btnHeight = height * 0.90;
+  b[0] = new Button(width/2, btnHeight - 19, 190, 45, btnTxt[0], 1); // --> Creates menu buttons
+  b[1] = new Button(width/2, btnHeight + 30, 150, 20, btnTxt[1], 2); // --> Creates menu buttons
+  b[2] = new Button(width/2, btnHeight + 56, 100, 20, btnTxt[2], 2); // --> Creates menu buttons
 
   t = new ToggleButton(width/12 + 15, 101); //--> Toggle Button between Fitness and Parameters
 
@@ -78,21 +80,37 @@ void setup() {
 
 void draw() {
 
-  background(0);
+  background(colorBg);
 
   //------------------------------------------------> Interface
   h1(font, h1Type, 34, "Ex-Machina", 40); //--> Title
 
-  String type = (dist(mouseX, mouseY, width/2, 70) < 50) ? textType : h1Type;
-  int f = (dist(mouseX, mouseY, width/2, 70) < 50) ? 14 : 22;
-  h1(font, type, f, "Generation " + pop.getGenerations() + ".", 70); //--> No. Generations
+  String type = (dist(mouseX, mouseY, width/2, 70) < 50) ? textType : textType;
+  int f = (dist(mouseX, mouseY, width/2, 70) < 50) ? 14 : 14;
+  h1(font, type, f, "Gen. " + pop.getGenerations(), 70); //--> No. Generations
+
+  if (iconDisplay) {
+    sunIcon(width - width/12 - 5, 100, 4);
+    colorLetters = 60;
+    colorBg = 255;
+    colorStrokes = 60;
+    colorOnHover = 0;
+    colorOff = 170;
+  } else {
+    moonIcon(width - width/12 - 5, 100, 6);
+    colorLetters = 200;
+    colorBg = 10;
+    colorStrokes = 200;
+    colorOnHover = 255;
+    colorOff = 80;
+  }
 
   t.create(); //--> Renders toggle button
 
   //------------------------------------------------> Displays parameters
   if (!isToggled) {
 
-    elements(font, textType, 14, "Parameters", width/2, 105, 200);
+    elements(font, textType, 14, "Parameters", width/2, 105, colorLetters);
     int i = 0;
     for (pamRefined pam : pamRefined) {
       String parameterText = pam.name.substring(2);
@@ -109,10 +127,10 @@ void draw() {
       //---------------> Interface design
       cb.get(i).create();
 
-      int pamColor = cb.get(i).getClicked() == 0 ? 100 : 200;
-      elements(font, textType, 12, parameterText, width/12, 135 + 25*i, pamColor);
-      elements(font, textType, 12, min, width * 0.4, 135 + 25*i, pamColor);
-      elements(font, textType, 12, max, width * 0.65, 135 + 25*i, pamColor);
+      colorPams = cb.get(i).getClicked() == 0 ? colorOff : colorLetters;
+      elements(font, textType, 12, parameterText, width/12, 135 + 25*i, colorPams);
+      elements(font, textType, 12, min, width * 0.4, 135 + 25*i, colorPams);
+      elements(font, textType, 12, max, width * 0.65, 135 + 25*i, colorPams);
 
       //------------------------------------------------> Updates variable parameters list based on user interaction
       if (cb.get(i).getClicked() == 0) {
@@ -124,7 +142,7 @@ void draw() {
     }
     //------------------------------------------------> Displays fitness score
   } else {
-    elements(font, textType, 14, "Fitness Score", width/2, 105, 200);
+    elements(font, textType, 14, "Fitness Score", width/2, 105, colorLetters);
 
     String [] screenFitness = new String [populationSize];
 
@@ -143,7 +161,7 @@ void draw() {
 
     button.update();
     if (inc == 0) {
-      button.create(font, textType);
+      button.create(font, h1Type);
     } else {
       button.create(font, notesType);
     }
@@ -182,6 +200,10 @@ void draw() {
 }
 
 void mouseReleased() {
+
+  if (dist(mouseX, mouseY, width - width/12 - 5, 100) < 6) {
+    iconDisplay = !iconDisplay;
+  }
 
   t.isHover(); //--> Checks toggle button state
 
