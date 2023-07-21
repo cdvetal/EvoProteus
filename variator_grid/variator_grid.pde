@@ -1,8 +1,8 @@
 /**
  
- Towards Automated Generative Design, Variator version 1.5
+ Towards Automated Generative Design, Variator version 1.7
  Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
- Last feature: Choose witch parameters to evolve within the parameter scope (16th july)
+ Last feature: Light/dark mode (21th july)
  --------------
  A. Main system (grid display version)
  --------------
