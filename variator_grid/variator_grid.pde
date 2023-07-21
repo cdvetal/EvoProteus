@@ -43,7 +43,6 @@ void setup() {
   background(colorBg);
 
   //------------------------------------------------> Sets three typefaces for the interface design (searching through the fontList)
-  //h1Type    = fontList[chooseType("Rafale-BG")];
   h1Type    = fontList[chooseType("Anthony")];
   textType  = fontList[chooseType("SpaceGrotesk-Regular")];
   notesType = fontList[chooseType("SpaceGrotesk-Regular")];
@@ -119,10 +118,10 @@ void draw() {
 
       String [] ld = split(pam.limits, ' ');
       //---------------> Interface design
-      String [] t1 = split(ld[0], ':');
+      String [] t1 = ld[0].length() > 0 ? split(ld[0], ':') : split(ld[1], ':');
       String min = t1[0] + ": " + t1[1];
       //---------------
-      String [] t2 = split(ld[1], ':');
+      String [] t2 = ld[1].length() > 0 ? split(ld[1], ':') : split(ld[2], ':');
       String max = t2[0] + ": " + t2[1];
       //---------------> Interface design
       cb.get(i).create();

@@ -6,18 +6,18 @@
  * Multiple-object collision.
  */
 
-int __c1 = 250; // min:0 max:255
-int __c2 = 150; // min:0 max:255
-int __c3 = 0; //min:0 max:255
+int __c1 = 250;//min:0 max:255
+int __c2 = 150;  //min:0 max:255
+int __c3= 0; //min:0 max:255
 
 boolean __teste = true; //min:true max:false
 
 
 
-int __numBalls = 12; // min:0 max:25
-int __diameter = 30; // min:10 max:80
+int __numBalls = 12;// min:0 max:25
+int __diameter =30; //min:10 max:80
 float spring = 0.05;
-float __gravity = 0.03; // min:0.01 max:0.05
+float __gravity = 0.03; //min:0.01 max:0.05
 float friction = -0.9;
 Ball[] balls = new Ball[__numBalls];
 
@@ -25,6 +25,7 @@ void setup() {
 
   size(440, 160);
 
+  float __debugSetup = 50; //min:10 max:100
   for (int i = 0; i < __numBalls; i++) {
     balls[i] = new Ball(random(width), random(height), __diameter, i, balls);
   }
@@ -49,6 +50,7 @@ class Ball {
   float vy = 0;
   int id;
   Ball[] others;
+  float __debugDraw = 50; //min:10 max:100
 
   Ball(float xin, float yin, float din, int idin, Ball[] oin) {
     x = xin;

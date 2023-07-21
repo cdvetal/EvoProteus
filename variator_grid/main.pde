@@ -87,6 +87,8 @@ class Main {
   int ix_setup = -1, ix_draw = -1; //--> index of "void setup()"
   int ix_size = -1; //--> index of "size(x,y);";
 
+  int debugSetup = 0, debugDraw = 0;
+
   //------------------------------------------------> (1) Parameters identification
 
   String type, name, value, limits, min_value, max_value;
@@ -103,12 +105,18 @@ class Main {
 
     //------------------------------------------------> (2) Searches through the sketch
 
-    for (int i=0; i<inputSketch.length; i++) {
+    for (int i=0; i< inputSketch.length; i++) {
 
       ix_l  =  inputSketch[i].indexOf(label);
       ix_at =  inputSketch[i].indexOf(attribution);
       ix_cl =  inputSketch[i].indexOf(close);
       ix_cm =  inputSketch[i].indexOf(comment);
+
+      ix_setup = inputSketch[i].indexOf(setup);
+      if (ix_setup != -1) debugSetup = i;
+
+      ix_draw = inputSketch[i].indexOf(draw);
+      if (ix_draw != -1)  debugDraw  = i;
 
       if (ix_l != -1 && ix_at != -1 && ix_cl != -1) {
         labeledIndex.append(inputSketch[i]);
@@ -143,12 +151,12 @@ class Main {
         limits = "Undefined";
       }
 
-      parameters.add(new Parameters(type, name, value, limits));
+      parameters.add(new Parameters(type, name, value, limits.trim()));
     }
 
     //------------------------------------------------> (4) Removes outliers, (preserve only parameters preceeded by variable declaration)
 
-    for (int k = 0; k<parameters.size(); k++) {
+    for (int k = 0; k < parameters.size(); k++) {
 
       parameters.get(k).type =  parameters.get(k).type.trim();
 
@@ -161,6 +169,14 @@ class Main {
         }
       }
     }
+
+    for (int i = 0; i < sketchLineRefined.size(); ++i) { // --> (Debug) Checks if there is any param. declared after setup (predicts system std. injections)
+      if (sketchLineRefined.get(i) > debugSetup)
+        sketchLineRefined.set(i, sketchLineRefined.get(i) + 1);
+      if (sketchLineRefined.get(i) > debugDraw)
+        sketchLineRefined.set(i, sketchLineRefined.get(i) + 1);
+    }
+
 
 
     //------------------------------------------------> (5) Prints Results
@@ -247,7 +263,6 @@ class Main {
       ix_setup = inputSketch[q].indexOf(setup); // --> Finding void setup() in input sketch
 
       if (ix_setup != -1) {
-
         inputSketch = splice(inputSketch, injectedSetup, q+1);
       }
     }

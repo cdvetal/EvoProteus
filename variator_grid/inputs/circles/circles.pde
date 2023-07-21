@@ -25,7 +25,7 @@ void setup() {
   size(300, 200);
 
   if (__bg)   background(0);
-  if (__bg ==false) background(255);
+  if (__bg == false) background(255);
 
   colorMode(HSB, 360, 100, 100);
   noStroke();
