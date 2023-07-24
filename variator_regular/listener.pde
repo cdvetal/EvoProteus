@@ -19,7 +19,7 @@ HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Wi
 
 void serverOpen() {
   /*$$[Further development here] Multicast based model on server assignment instead of one server per client*/
-  serverSketches.add(new Server(this, 3000 + counter)); // --> assigning new server each iteration
+  serverSketches.add(new Server(this, 3000 + netCounter)); // --> assigning new server each iterationr
 }
 
 int sketchW, sketchH;
@@ -41,7 +41,7 @@ class Listener {
   //------------------------------------------------> Listens valuable info. from each individual
   void listenMain() {
     
-    for (int i = 0; i < serverSketches.size(); i++) {
+    for (int i = 0; i < serverSketches.size(); ++ i) {
       clientSketches = serverSketches.get(i).available();
 
       if (clientSketches != null) {
@@ -127,7 +127,7 @@ class Listener {
 
   //------------------------------------------------> Kills population
   void serverShutdown () {
-    for (int i = 0; i < serverSketches.size(); i++) {
+    for (int i = 0; i < serverSketches.size(); ++ i) {
       serverSketches.get(i).write(exitSketch);
     }
   }

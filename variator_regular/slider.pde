@@ -118,7 +118,7 @@ void createSliders (Slider [] hs) {
 
   float yPos = height * 0.52;
 
-  for (int i = 0; i < hs.length; i++) {
+  for (int i = 0; i < hs.length; ++ i) {
     float min = 0, max = 0;
     String operator = "";
     boolean type = true;

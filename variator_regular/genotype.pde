@@ -22,7 +22,7 @@ class Genotype {
     genes.set(t, v);
     genesMin.append(min);
     genesMax.append(max);
-    numGenes++;
+    ++ numGenes;
   }
 
   Genotype(StringDict genes) {
@@ -39,7 +39,7 @@ class Genotype {
 
     int crossoverPoint = int(random(1, genes.size() - 1));
 
-    for (int i = 0; i < genes.size(); i++) {
+    for (int i = 0; i < genes.size(); ++ i) {
 
       if (i < crossoverPoint) {
         childGenes[i] = genes.get(keysList[i]);
@@ -67,7 +67,7 @@ class Genotype {
     //--> println("Boundaries for mutation: " + genesMin + " " + genesMax);
     keysList = genes.keyArray();
 
-    for (int i = 0; i < genes.size(); i++) {
+    for (int i = 0; i < genes.size(); ++ i) {
 
       if (random(1) <= mutationRate) {
 
@@ -128,7 +128,7 @@ class Genotype {
     Genotype updated = new Genotype(genes);
     StringDict previousGenes = previous.getGenes();
 
-    for (int i = 0; i < genes.size(); ++i) {
+    for (int i = 0; i < genes.size(); ++ i) {
       if (str(genes.keyArray()[i].charAt(0)).equals(updateParams.get(i))) {
         updated.genes.set(keysList[i], previousGenes.get(keysList[i]));
       }

@@ -2,7 +2,7 @@
  
  Towards Automated Generative Design, Variator version 1.7
  Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
- Last feature: Light/dark mode (21th july)
+ Latest feature: Restart generation (24th july)
  --------------
  A. Main system (grid display version)
  --------------
@@ -21,11 +21,12 @@
  */
 
 //------------------------------------------------> Global counters
-int counter=0; // --> label servers
+int netCounter = 0; //--> label servers
 int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
 int buttonCounter = 0; // --> count each click on evolution button
 boolean iconDisplay = false;
+boolean restart = false;
 
 Population pop;
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
@@ -82,11 +83,18 @@ void draw() {
   background(colorBg);
 
   //------------------------------------------------> Interface
-  h1(font, h1Type, 34, "Ex-Machina", 40); //--> Title
+  h1(font, h1Type, 34, "Variator", 40); //--> Title
 
   String type = (dist(mouseX, mouseY, width/2, 70) < 50) ? textType : textType;
   int f = (dist(mouseX, mouseY, width/2, 70) < 50) ? 14 : 14;
-  h1(font, type, f, "Gen. " + pop.getGenerations(), 70); //--> No. Generations
+  elements(font, type, f, "Gen. " + pop.getGenerations(), width/2 - 60, 70, colorLetters); //--> No. Generations
+
+
+  //--> Restart button init.
+  boolean onHoverRestart = dist(mouseX, mouseY, width/2 + 60, 70) < 20 ? true : false;
+  int colorRestart = onHoverRestart ? colorOnHover : colorLetters;
+  elements(font, type, f, "Restart", width/2 + 60, 70, colorRestart); //--> Restart Generation
+
 
   if (iconDisplay) {
     sunIcon(width - width/12 - 5, 100, 4);
@@ -137,7 +145,7 @@ void draw() {
       } else {
         if (str(i).equals(updateParams.get(i))) updateParams.set(i, "a");
       }
-      i++;
+      ++ i;
     }
     //------------------------------------------------> Displays fitness score
   } else {
@@ -145,7 +153,7 @@ void draw() {
 
     String [] screenFitness = new String [populationSize];
 
-    for (int i = 0; i < populationSize; i++) { //--> Fitness viz.
+    for (int i = 0; i < populationSize; ++ i) { //--> Fitness viz.
       String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
       screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
       if (i<10) h1(font, textType, 12, screenFitness [i], 135 + 25*i);
@@ -165,17 +173,17 @@ void draw() {
       button.create(font, notesType);
     }
 
-    inc++;
+    ++ inc;
   }
 
   //------------------------------------------------> Renders sliders
-  for (int j = 0; j < hs.length; j++) {
+  for (int j = 0; j < hs.length; ++ j) {
     hs[j].update();
     hs[j].display();
   }
 
   //------------------------------------------------> Fitness assignment.
-  for (int i = 0; i < populationSize; i++) {
+  for (int i = 0; i < populationSize; ++ i) {
 
     String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
 
@@ -214,7 +222,7 @@ void mouseReleased() {
     firstMousePress = true;
   }
 
-  for (int g  = 0; g < b.length; g++) {
+  for (int g  = 0; g < b.length; ++ g) {
 
     if (b[g].getHover()) {
       //------------------------------------------------> 1. Main button
@@ -229,11 +237,11 @@ void mouseReleased() {
           btnTxt[0] = "Next Generation";
           println("-------------");
           //---------------
-          for (int a = 0; a < pamRefined.size(); a++) { //--> Initializes updateParams list
+          for (int a = 0; a < pamRefined.size(); ++ a) { //--> Initializes updateParams list
             updateParams.append("a");
           }
           //---------------
-          for (int p = 0; p < pamRefined.size(); p++) {
+          for (int p = 0; p < pamRefined.size(); ++ p) {
             isClicked.append(1);
             cb.add(new CircleButton(width - width/12 - 5, 130 + 25*p, isClicked.get(p)));
           }
@@ -269,6 +277,24 @@ void mouseReleased() {
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
       }
     }
+  }
+
+  //------------------------------------------------> Restart button activation
+  if (dist(mouseX, mouseY, width/2 + 60, 70) < 20) {
+    //--> Resets all counters
+    indivCounter=0;
+    popCounter = 0;
+    buttonCounter = 0;
+    genCounter = -1;
+    counterGridX = 0;
+    counterGridY = 0;
+    exitSketch = "2";
+    sketches.serverShutdown();
+    exitSketch = "1";
+    btnTxt[0] = "Create Population";
+    //--> Empty created objects
+    serverSketches.clear();
+    genotype.clear();
   }
 }
 

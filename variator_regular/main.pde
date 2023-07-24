@@ -103,9 +103,16 @@ class Main {
 
   void extractor () {
 
+    // --> Needed to restart
+    labeledIndex.clear();
+    sketchLine.clear();
+    sketchLineRefined.clear();
+    parameters.clear();
+    pamRefined.clear();
+
     //------------------------------------------------> (2) Searches through the sketch
 
-    for (int i=0; i< inputSketch.length; i++) {
+    for (int i=0; i< inputSketch.length; ++ i) {
 
       ix_l  =  inputSketch[i].indexOf(label);
       ix_at =  inputSketch[i].indexOf(attribution);
@@ -126,7 +133,7 @@ class Main {
 
     //------------------------------------------------> (3) Inspects the identified labeled indexes
 
-    for (int j=0; j<labeledIndex.size(); j++) {
+    for (int j=0; j < labeledIndex.size(); ++ j) {
 
       ix_l  = labeledIndex.get(j).indexOf(label);
       ix_at = labeledIndex.get(j).indexOf(attribution);
@@ -150,27 +157,24 @@ class Main {
       } else {
         limits = "Undefined";
       }
-
       parameters.add(new Parameters(type, name, value, limits.trim()));
     }
 
     //------------------------------------------------> (4) Removes outliers, (preserve only parameters preceeded by variable declaration)
 
-    for (int k = 0; k < parameters.size(); k++) {
+    for (int k = 0; k < parameters.size(); ++ k) {
 
       parameters.get(k).type =  parameters.get(k).type.trim();
 
-      for (int l = 0; l< primitives.length; l++) {
-
+      for (int l = 0; l< primitives.length; ++ l) {
         if (parameters.get(k).type.equals(primitives[l])) {
-
           pamRefined.add(new pamRefined(parameters.get(k).type, parameters.get(k).name, parameters.get(k).value, parameters.get(k).limits));
           sketchLineRefined.append(sketchLine.get(k));
         }
       }
     }
 
-    for (int i = 0; i < sketchLineRefined.size(); ++i) { // --> (Debug) Checks if there is any param. declared after setup (predicts system std. injections)
+    for (int i = 0; i < sketchLineRefined.size(); ++ i) { // --> (Debug) Checks if there is any param. declared after setup (predicts system std. injections)
       if (sketchLineRefined.get(i) > debugSetup)
         sketchLineRefined.set(i, sketchLineRefined.get(i) + 1);
       if (sketchLineRefined.get(i) > debugDraw)
@@ -204,9 +208,9 @@ class Main {
 
     StringList variableType = new StringList(); // --> StringList to help identify Datatype primitive
     genotype.add(new Genotype());
-    genCounter ++;
+    ++ genCounter;
 
-    for (int d = 0; d<pamRefined.size(); d++) {
+    for (int d = 0; d < pamRefined.size(); ++ d) {
 
       ix_min = pamRefined.get(d).limits.indexOf(min);
       ix_max = pamRefined.get(d).limits.indexOf(max);
@@ -251,14 +255,13 @@ class Main {
   //--> Necessary for future communications between pop. and system.
 
   void injectorA (int counter) {
-
     // --> Client-Server injection code entries
     String injectedBegin = "import processing.net.*;import processing.awt.PSurfaceAWT;PSurfaceAWT.SmoothCanvas smoothCanvas;Client clientSketches;int listener = 0;void exit() { windowOpen = false; thread(\"exitDelay\");}boolean windowOpen = true;void exitDelay(){delay(1500); System.exit(0);}String input; int exitValue;final String sketch = getClass().getName();int pid;String pidT;//Injected line";
     String injectedSetup = "clientSketches = new Client(this, \"localhost\", 3000 + " + counter + ");pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write(\"0\" + \" \" + sketch + \" \" + pidT);surface.setLocation("+ gridX + ","+ gridY+");PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println(\"[Client] Client connected\");//Injected line";
     String injectedDraw  = "java.awt.Point p = new java.awt.Point();smoothCanvas.getFrame().getLocation(p);if (windowOpen==true) {listener=1;} else if (windowOpen == false) {listener=0;}clientSketches.write(\"1\" + \" \" + sketch + \" \" + listener + \" \" + p.x + \" \" + p.y + \" \");if (clientSketches.available() > 0) {input = clientSketches.readString(); exitValue = int(input); if (exitValue == 2) exit();}//Injected line";
 
 
-    for (int q=0; q<inputSketch.length; q++) {
+    for (int q=0; q<inputSketch.length; ++ q) {
 
       ix_setup = inputSketch[q].indexOf(setup); // --> Finding void setup() in input sketch
 
@@ -267,7 +270,7 @@ class Main {
       }
     }
 
-    for (int q=0; q<inputSketch.length; q++) {
+    for (int q=0; q<inputSketch.length; ++ q) {
 
       ix_draw = inputSketch[q].indexOf(draw); // --> Finding void draw() in input sketch
 
@@ -292,12 +295,10 @@ class Main {
 
   void injectorB (String [] values) {
 
-
     String a, b, c;
     int ixInjectValues; // --> Stores each sketchLine to be variated
 
-
-    for (int t = 0; t < sketchLineRefined.size(); t++) {
+    for (int t = 0; t < sketchLineRefined.size(); ++ t) {
 
       ixInjectValues = sketchLineRefined.get(t);
 
@@ -331,7 +332,7 @@ class Main {
   void popExport(int counter) {
     println("indiv " + nf(counter, 3) + " from population " + nf(popCounter, 3) + " exported.");
 
-    for (int s = 0; s<inputSketch.length; s++) {
+    for (int s = 0; s<inputSketch.length; ++ s) {
       saveStrings("variations/pop_" + nf(popCounter, 3) + "/indiv_"+nf(counter, 3) + "/indiv_"+nf(counter, 3) + ".pde", inputSketch);
     }
   }
@@ -346,7 +347,7 @@ class Main {
 
   void runSketch(int counter) {
     String path = "";
-    for (int f = 0; f < counter; f++) {
+    for (int f = 0; f < counter; ++ f) {
       path = sketchPath("variations/pop_"+nf(popCounter, 3)+"/indiv_"+nf(f, 3));
       //println(path);
       if (counter == -1) {
@@ -367,7 +368,7 @@ class Main {
 
     StringList execSketches = new StringList();
 
-    for (int l = 0; l < populationSize; ++l) {
+    for (int l = 0; l < populationSize; ++ l) {
       execSketches.append("indiv_"+nf(l, 3));
     }
 
@@ -387,7 +388,7 @@ class Main {
     }
 
     if (zombieSketch.size() != 0) {
-      for (int k = 0; k < zombieSketch.size(); ++k) {
+      for (int k = 0; k < zombieSketch.size(); ++ k) {
         path = sketchPath("variations/pop_"+nf(popCounter, 3) + "/" + zombieSketch.get(k));
         exec("/usr/local/bin/processing-java", "--sketch=" + path, "--run");
       }
@@ -404,14 +405,14 @@ class Main {
       if (processList[1].equals("processing.core.PApplet")) processFilter.append(processList[0]);
     }
 
-    for (int f = 0; f < processFilter.size(); ++f) {
+    for (int f = 0; f < processFilter.size(); ++ f) {
       if (processFilter.get(f).equals(systemIDtoText)) processFilter.remove(f);
     }
 
-    for (int a = 0; a < healthySketchesID.size(); ++a) {
+    for (int a = 0; a < healthySketchesID.size(); ++ a) {
       String healthy = healthySketchesID.get(a);
 
-      for (int b = 0; b < processFilter.size(); ++b) {
+      for (int b = 0; b < processFilter.size(); ++ b) {
         String filter = processFilter.get(b);
         if (filter.equals(healthy)) {
           processFilter.remove(b);
@@ -424,7 +425,7 @@ class Main {
 
     if (processFilter.size() != 0) {
       try {
-        for (int k = 0; k < processFilter.size(); ++k) {
+        for (int k = 0; k < processFilter.size(); ++ k) {
           Runtime.getRuntime().exec("kill -9 " + processFilter.get(k));
         }
       }
@@ -445,7 +446,7 @@ class Main {
     String comma = ",", paren = ")";
     int ix_comma = -1, ix_paren = -1;
 
-    for (int i = 0; i < inputSketch.length; i++) {
+    for (int i = 0; i < inputSketch.length; ++ i) {
       ix_size = inputSketch[i].indexOf(size);
       if (ix_size != -1) {
         try {
@@ -479,6 +480,6 @@ class Main {
     gridX = (sketchW * counterGridX) + (23 * (counterGridX + 1));
     gridY = (sketchH * counterGridY) +  46 * (counterGridY + 1);
 
-    counterGridX +=1;
+    counterGridX += 1;
   }
 }
