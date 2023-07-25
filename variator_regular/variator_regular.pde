@@ -2,7 +2,7 @@
  
  Towards Automated Generative Design, Variator version 1.8
  Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
- Latest feature: Restart generation (24th july)
+ Latest feature: Add to favourites folder (24th july)
  --------------
  A. Main system (grid display version)
  --------------
@@ -28,8 +28,8 @@ int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
 int buttonCounter = 0; // --> count each click on evolution button
 
-boolean iconDisplay = false;
-boolean restart = false;
+boolean iconDisplay = false; //--> View mode
+boolean restart = false; //--> Restart button
 
 Population pop;
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
