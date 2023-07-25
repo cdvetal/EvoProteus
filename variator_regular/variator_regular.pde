@@ -1,6 +1,6 @@
 /**
  
- Towards Automated Generative Design, Variator version 1.7
+ Towards Automated Generative Design, Variator version 1.8
  Ricardo Sacadura advised by Penousal Machado and Tiago Martins (july 2023)
  Latest feature: Restart generation (24th july)
  --------------
@@ -14,9 +14,11 @@
  Original variable -> int radius = 0;
  Marked-up variable -> int __radius = 10; //min:0 max:50
  (only initializations are read by the system)
- 4.  Run Variator and upload your sketch;
- 5.  Explore.
- (all variated sketches will be stored -> 'variations' folder)
+ 4.  Make sure your background() assignment is set right after void draw();
+ 5.  Run Variator and upload your sketch (make sure all code is combined in just 1 file);
+ 6.  Explore.
+ (all variated sketches will be stored at -> 'variations' folder)
+ (your favourite ones will be stored at   -> 'favourites' folder)
  
  */
 
@@ -25,6 +27,7 @@ int netCounter = 0; //--> label servers
 int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
 int buttonCounter = 0; // --> count each click on evolution button
+
 boolean iconDisplay = false;
 boolean restart = false;
 
