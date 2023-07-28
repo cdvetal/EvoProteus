@@ -472,7 +472,7 @@ class Main {
 
   void setGrid() {
 
-    if (counterGridX == 3) { //--> Define number of columns
+    if (counterGridX == 5) { //--> Define number of columns
       counterGridX = 0;
       counterGridY += 1;
     }

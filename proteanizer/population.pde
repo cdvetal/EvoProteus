@@ -6,10 +6,11 @@ import java.util.*; //--> Needed to sort arrays
 
 //------------------------------------------------> Genetic operators init.
 int populationSize = 1;
-float mutationRate = 0.3;
-float crossoverRate = 0.7;
-int tournamentSize = 3;
 int eliteSize = 1;
+int tournamentSize = 3;
+float crossoverRate = 0.7;
+float mutationRate = 0.3;
+float mutationScaling = 0.05;
 
 class Population {
 

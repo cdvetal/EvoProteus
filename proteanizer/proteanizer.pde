@@ -39,7 +39,7 @@ StringList updateParams = new StringList(); // --> Updates evolving parameters l
 
 void setup() {
 
-  size(275, 850);
+  size(275, 900);
   //pixelDensity(2);
   int w = displayWidth - width;
   int h = displayHeight - height;
@@ -53,10 +53,10 @@ void setup() {
   notesType = fontList[chooseType("SpaceGrotesk-Regular")];
 
   //------------------------------------------------> Info. on system process pid (debug)
-  
-   systemID = int(ProcessHandle.current().pid());
-   systemIDtoText = str(systemID);
-   println("System ID: " + systemIDtoText);
+
+  systemID = int(ProcessHandle.current().pid());
+  systemIDtoText = str(systemID);
+  println("System ID: " + systemIDtoText);
 
   //------------------------------------------------> Interface buttons and sliders
   btnTxt[0] = "Create population";
@@ -165,7 +165,7 @@ void draw() {
     }
   }
 
-  sectionLine(height * 0.47);
+  sectionLine(height * 0.425);
 
   //------------------------------------------------> Renders buttons
   int inc = 0;
@@ -209,6 +209,7 @@ void draw() {
   tournamentSize = int(hs[2].getOperatorValue());
   crossoverRate = float(hs[3].getOperatorValue());
   mutationRate = float(hs[4].getOperatorValue());
+  mutationScaling = float(hs[5].getOperatorValue());
 }
 
 void mouseReleased() {

@@ -1,13 +1,13 @@
 /**
-    1.2 Interface design implementation
-*/
+ 1.2 Interface design implementation
+ */
 
 boolean firstMousePress = false;
 String operatorValue;
-Slider [] hs = new Slider [5];
+Slider [] hs = new Slider [6];
 
 class Slider {
-  float swidth, sheight;    //--> width and height of bar
+  float swidth, sheight;   //--> width and height of bar
   float xpos, ypos;       //--> x and y position of bar
   float spos, newspos;    //--> x position of slider
   float sposMin, sposMax; //--> max and min values of slider
@@ -19,12 +19,13 @@ class Slider {
   float vMin, vMax;
   String operator;
   boolean type;
+  boolean cases;
 
   String printValue;
 
   PFont fontSlider;
 
-  Slider (float xp, float yp, float sw, float sh, int l, float vm, float vM, String op, boolean t) {
+  Slider (float xp, float yp, float sw, float sh, int l, float vm, float vM, String op, boolean t, boolean cases) {
     swidth = sw;
     sheight = sh;
     float widthtoheight = sw - sh;
@@ -40,6 +41,7 @@ class Slider {
     vMax = vM;
     operator = op;
     type = t;
+    this.cases = cases;
   }
 
   void update() {
@@ -98,10 +100,14 @@ class Slider {
       operatorValue = str(int(value));
     } else {
       operatorValue = str(int(value));
-      operatorValue = nf(value, 0, 1);
+      if (cases) {
+        operatorValue = nf(value, 0, 1);
+      } else {
+        operatorValue = nf(value, 0, 2);
+      }
     }
     printValue = operatorValue;
-    text(operator, xpos, ypos + sheight * 11);
+    text(operator, xpos, ypos + sheight * 13);
     text(operatorValue, spos, ypos - sheight * 7);
   }
 
@@ -116,12 +122,13 @@ class Slider {
 
 void createSliders (Slider [] hs) {
 
-  float yPos = height * 0.52;
+  float yPos = height * 0.471;
 
   for (int i = 0; i < hs.length; ++ i) {
     float min = 0, max = 0;
     String operator = "";
     boolean type = true;
+    boolean cases = true;
 
     if (i == 0) {
       min = 0;
@@ -143,14 +150,22 @@ void createSliders (Slider [] hs) {
       max = 1;
       operator = "Crossover Rate";
       type = false;
+      cases =true;
     } else if (i == 4) {
       min = 0;
       max = 1;
       operator = "Mutation Rate";
       type = false;
+      cases = true;
+    } else if (i == 5) {
+      min = 0;
+      max = 0.5;
+      operator = "Mutation Scale factor";
+      type = false;
+      cases = false;
     }
 
-    hs[i] = new Slider(width/2, yPos, 125, 1.6, 3, min, max, operator, type);
+    hs[i] = new Slider(width/2, yPos, 125, 1.6, 3, min, max, operator, type, cases);
     yPos+=60; // --> Set distance between sliders
   }
 }

@@ -1,6 +1,6 @@
 /**
-    2. Genotype constructor
-*/
+ 2. Genotype constructor
+ */
 
 int genCounter = -1;
 int numGenes = 0;
@@ -76,10 +76,13 @@ class Genotype {
         float min = float(genesMin.get(i));
         float max = float(genesMax.get(i));
 
-        float stdDeviation = (max - min) / 20.0; //--> Standard deviation parameter
-
         float current = float(genes.get(keysList[i]));
-        float newValue = current + randomGaussian() * stdDeviation;
+        float valueRange = max - min;
+        float stdDeviation = valueRange * mutationScaling;
+
+        float newValue = current + (randomGaussian() * stdDeviation);
+        //--> The original randomGaussian() has std. deviation of 1 and a mean of 0
+        //--> When multiplied by the valueRange, the means is still 0 but the std. dev. is 1 * valueRange
 
         if (keyType.equals(primitives[1])) { //--> Mutate floats
           float mutation = constrain(newValue, min, max);
