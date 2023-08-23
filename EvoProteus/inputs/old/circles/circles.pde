@@ -1,3 +1,4 @@
+import processing.pdf.*;
 /**
  * Functions.
  *
@@ -26,6 +27,7 @@ ArrayList <Target> t = new ArrayList<Target>();
 void setup() {
 
   size(300, 200);
+  beginRecord(PDF, "frame.pdf");
 
   colorMode(HSB, 360, 100, 100);
   noStroke();
@@ -40,6 +42,10 @@ void setup() {
 void draw() {
   background(c);
   for (int i = 0; i < __num_circles; i++) t.get(i).create();
+}
+
+void keyReleased() {
+  if (key == 'a') endRecord();
 }
 
 class Target {

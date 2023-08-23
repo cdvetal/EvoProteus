@@ -1,46 +1,34 @@
-float __ampX = 12.0; // min:0.0 max:25.0
-float __ampY = 12.0; // min:0.0 max:25.0
+import processing.pdf.*;
+/**
+ * Bezier.
+ *
+ * The first two parameters for the bezier() function specify the
+ * first point in the curve and the last two parameters specify
+ * the last point. The middle parameters set the control points
+ * that define the shape of the curve.
+ */
 
-float __firstY = 150; // min:0 max:150
-float __lastY = 150; // min:0 max:150
-
-float __firstX = 0; // min:0 max:300
-float __lastX = 500; // min:250 max:500
-
-
-
+float __a = 100; // min:20 max:200
+float __b = 240; // min:10 max:300
+float __c = 20; // min:10 max:150
+float __d = 8.0; // min:1.0 max:32.0
+float __e = 16.0; // min:1.0 max:50.0
+float __f = 200; // min:30 max:500
 
 void setup() {
-  size(400, 150);
-  background(0);
-  noFill();
+  size(340, 260);
+  beginRecord(PDF, "frame.pdf");
   stroke(255);
-  strokeWeight(0.3);
-
-  // Stop generating after 2 seconds
-  new java.util.Timer().schedule(
-    new java.util.TimerTask() {
-    public void run() {
-      noLoop();
-    }
-  }
-  ,
-    1500
-    );
+  noFill();
 }
 
 void draw() {
-  beginShape();
-  vertex(__firstX, __firstY); // Add vertex at the bottom left corner
-  for (int x = 0; x <= width; x += 30) {
-    float y = noise(x / __ampX, frameCount / __ampY) * height;
-    curveVertex(x, y);
+  background(0);
+  for (int i = 0; i < __f; i += 20) {
+    bezier(mouseX-(i/2.0), 40+i, 210, __c, __b, __a, 140-(i/__e), 200+(i/__d));
   }
-  vertex(__lastX, __lastY); // Add vertex at the bottom right corner
-  endShape(CLOSE); // Close the shape
 }
 
-void mouseClicked() {
-  // Save a screenshot to the download folder when the user clicks the mouse
-  saveFrame("generative-art.png");
+void keyReleased() {
+  if (key == 'a') endRecord();
 }

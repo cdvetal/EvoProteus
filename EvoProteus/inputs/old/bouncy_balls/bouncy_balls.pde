@@ -1,4 +1,4 @@
-
+import processing.pdf.*;
 /**
  * Bouncy Bubbles
  * based on code from Keith Peters.
@@ -24,6 +24,7 @@ Ball[] balls = new Ball[__numBalls];
 void setup() {
 
   size(440, 160);
+  beginRecord(PDF, "frame.pdf");
 
   float __debugSetup = 50; //min:10 max:100
   for (int i = 0; i < __numBalls; i++) {
@@ -40,6 +41,10 @@ void draw() {
     ball.move();
     ball.display();
   }
+}
+
+void keyReleased() {
+  if (key == 'a') endRecord();
 }
 
 class Ball {
