@@ -157,11 +157,13 @@ void draw() {
   } else {
     elements(font, textType, 14, "Fitness Score", width/2, 105, colorLetters);
 
-    String [] screenFitness = new String [populationSize];
+    String [] screenFitness = new String[populationSize];
+    
+    StringDict fitnesses = sketches.serverFitness();
 
     for (int i = 0; i < populationSize; ++ i) { //--> Fitness viz.
-      String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
-      screenFitness [i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
+      String rawFitness = fitnesses.get("indiv_"+nf(i, 3));
+      screenFitness[i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
       if (i<10) h1(font, textType, 12, screenFitness [i], 135 + 25*i);
     }
   }
@@ -189,15 +191,19 @@ void draw() {
   }
 
   //------------------------------------------------> Fitness assignment.
+  
+  /*
+  StringDict fitnesses = sketches.serverFitness();
   for (int i = 0; i < populationSize; ++ i) {
 
-    String rawFitness = sketches.serverFitness().get("indiv_"+nf(i, 3));
+    String rawFitness = fitnesses.get("indiv_"+nf(i, 3));
 
     if (rawFitness != null) {
       float fitness = float(rawFitness);
       pop.getIndiv(i).setFitness(fitness); //--> Assign fitness score to each indiv.
     }
   }
+  */
 
   //------------------------------------------------> Communication between sketches
   sketches.listenMain();
@@ -262,8 +268,40 @@ void mouseReleased() {
 
           counterGridX = 0;
           counterGridY = 0;
+          
+          String prompt = "\"Red\"";
+          if (pop.ancestors != null){
+            for (int i = 0; i < pop.ancestors.length; ++ i) {
+              String image_path = sketchPath() + "/individuo_" + i + ".png";  // TODO - add generation folder 
+           
+              
+              ProcessBuilder processBuilder = new ProcessBuilder();
+              
+              processBuilder.command("/Users/luisgoncalo/anaconda3/envs/diffvg/bin/python", "/Users/luisgoncalo/Desktop/towards-automated-generative-design/EvoProteus/script.py", image_path, prompt);
+              
+              try {
+                Process process = processBuilder.start();
+                
+                process.waitFor();
+            
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
 
-          pop.evolve();
+                String rawFitness = reader.readLine().trim();
+                
+                println("Fitness", image_path, prompt, rawFitness);
+                
+                pop.getIndiv(i).setFitness(float(rawFitness));
+                
+                process.destroy();
+            
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+          }
+
+          pop.evolve();  
           pop.renderPop();
           indivCounter = 0;
 

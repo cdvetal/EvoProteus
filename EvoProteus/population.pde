@@ -34,7 +34,7 @@ class Population {
 
       m.manipulator();//--> input values to random values between established boundaries
       m.setGrid();//--> Display population on-screen
-      m.injectorA(netCounter);// --> Client-Server injection code entries and other utilities
+      m.injectorA(netCounter, i);// --> Client-Server injection code entries and other utilities
 
       m.injectorB(genotype.get(i).genes.valueArray()); // --> variated values injection
       //println(genotype.get(i).genes.valueArray());
@@ -99,7 +99,7 @@ class Population {
       serverOpen(); //--> Open servers for population
 
       m.setGrid();//--> Display population on-screen
-      m.injectorA(netCounter);
+      m.injectorA(netCounter, i);
       m.injectorB(ancestors[i].genes.valueArray());
       m.popExport(indivCounter);
 
