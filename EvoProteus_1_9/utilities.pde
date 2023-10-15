@@ -1,6 +1,6 @@
 /**
- 1.3 Interface design implementation
- */
+    1.3 Interface design implementation
+*/
 
 //------------------------------------------------> Colours config.
 int colorLetters = 200;
@@ -142,6 +142,7 @@ class CircleButton {
       fill(colorLetters);
       noStroke();
       ellipse(xPos + 0.5, yPos + 0.5, radius, radius);
+
     } else {
       ellipse(xPos, yPos, radius * 2, radius * 2);
     }
@@ -173,10 +174,10 @@ void sunIcon(float x, float y, float radius) {
 
   stroke(colorStrokes);
   strokeWeight(1.4);
-
+  
   float angle = TWO_PI / 8;
   ellipse(x, y, radius * 2, radius * 2);
-
+  
   for (float a = 0; a < TWO_PI; a+=angle) {
     float x1 = x + cos(a) * radius;
     float y1 = y + sin(a) * radius;
@@ -188,10 +189,11 @@ void sunIcon(float x, float y, float radius) {
 
 //------------------------------------------------> Creates a moon icon
 void moonIcon(float x, float y, float radius) {
-
+  
   noStroke();
   fill(255);
   ellipse(x, y, radius * 2, radius*2);
   fill(0);
-  ellipse(x - 4, y, radius * 2, radius*2);
+  ellipse(x - 4 , y, radius * 2, radius*2);
+
 }

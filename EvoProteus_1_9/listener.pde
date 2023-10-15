@@ -19,7 +19,7 @@ HashMap<String, Integer> windowStatus = new HashMap<String, Integer>(); //--> Wi
 
 void serverOpen() {
   /*$$[Further development here] Multicast based model on server assignment instead of one server per client*/
-  serverSketches.add(new Server(this, 3000 + netCounter)); // --> assigning new server each iteration
+  serverSketches.add(new Server(this, 3000 + netCounter)); // --> assigning new server each iterationr
 }
 
 int sketchW, sketchH;
@@ -70,6 +70,11 @@ class Listener {
               healthySketchesID.append(params[2]);
               println(params[1] + " rendered." + " ID: " + params[2]);
             }
+          }
+          if (params[0].equals("2")) {
+            fav = true;
+            niceSketch = params[1].substring(0,9);
+            println("Sketch " + niceSketch + " was saved to favourites!");
           }
         }
         catch(Exception exc) {
@@ -126,7 +131,7 @@ class Listener {
   }
 
   //------------------------------------------------> Kills population
-  void windowShutdown () {
+  void serverShutdown () {
     for (int i = 0; i < serverSketches.size(); ++ i) {
       serverSketches.get(i).write(exitSketch);
     }

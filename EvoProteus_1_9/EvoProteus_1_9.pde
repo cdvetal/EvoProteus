@@ -1,9 +1,9 @@
 /**
  
- Towards Automated Generative Design, EvoProteus version 2.0
+ Towards Automated Generative Design, EvoProteus version 1.9
  Ricardo Sacadura, Penousal Machado, Tiago Martins and Luís Gonçalo (October 2023)
  at Computational Design and Visualization Lab. (DEI UC)
- Latest feature: Execution reconfiguration (Play/pause feature) (15th October)
+ Latest feature: CLIP integration, semi-automatic evolution (16th October)
  --------------
  A. Main system (grid display version)
  --------------
@@ -19,11 +19,11 @@
  5.  Run EvoProteus and upload your sketch (make sure all code is compiled into just one file);
  6.  Explore.
  (all variated sketches will be stored at -> 'variations' folder)
- (each variation will have a .png file stored stored at -> 'snapshots' folder)
+ (your favourite ones will be stored at   -> 'favourites' folder)
  
  */
 
-//------------------------------------------------> Counters
+//------------------------------------------------> Global counters
 int netCounter = 0; //--> label servers
 int indivCounter=0; // --> label indiv.
 int popCounter = 0; // --> count each generation
@@ -31,13 +31,6 @@ int buttonCounter = 0; // --> count each click on evolution button
 
 boolean iconDisplay = false; //--> View mode
 boolean restart = false; //--> Restart button
-boolean renderButton = true; //--> View mode
-boolean playHover = false, pauseHover = false;
-
-//------------------------------------------------> Buttons
-Button [] b = new Button [5];
-float btnHeight = 625; //--> First y-positions on screen
-String [] btnTxt = new String [3]; //--> Text for buttons
 
 Population pop;
 ArrayList <Genotype> genotype = new ArrayList<Genotype>();
@@ -51,8 +44,7 @@ void setup() {
 
   int w = displayWidth - width;
   int h = displayHeight - height;
-  //surface.setLocation(w - width/8, h/2); --> Regular laptop
-  surface.setLocation(displayWidth + 100, h/2 + 80);
+  surface.setLocation(w - width/8, h/2);
 
   background(colorBg);
 
@@ -73,13 +65,9 @@ void setup() {
   btnTxt[2] = "Run original sketch";
 
   btnHeight = height * 0.90;
-  //------------------------------------------------> Creates new buttons
-  b[0] = new Button(width/2, btnHeight - 19, 190, 45, btnTxt[0], 1);
-  b[1] = new Button(width/2, btnHeight + 30, 150, 20, btnTxt[1], 2);
-  b[2] = new Button(width/2, btnHeight + 56, 100, 20, btnTxt[2], 2);
-
-  b[3] = new Button(width/2 - 30, btnHeight - 19, 30, 3);
-  b[4] = new Button(width/2 + 30, btnHeight - 19, 30, 4);
+  b[0] = new Button(width/2, btnHeight - 19, 190, 45, btnTxt[0], 1); // --> Creates menu buttons
+  b[1] = new Button(width/2, btnHeight + 30, 150, 20, btnTxt[1], 2); // --> Creates menu buttons
+  b[2] = new Button(width/2, btnHeight + 56, 100, 20, btnTxt[2], 2); // --> Creates menu buttons
 
   t = new ToggleButton(width/12 + 15, 101); //--> Toggle Button between Fitness and Parameters
 
@@ -98,8 +86,11 @@ void draw() {
   background(colorBg);
 
   //------------------------------------------------> Interface
-  h1(font, h1Type, 34, "EvoProteus", 40); //--> Title
-
+  if (!fav) h1(font, h1Type, 34, "EvoProteus", 40); //--> Title
+  if (fav) {
+    elements(font, textType, 12, niceSketch + " was added to favourites.", width/2, 35, colorLetters); //--> Add to favourites folder
+    if (frameCount % 60 == 0) fav = false;
+  }
   String type = (dist(mouseX, mouseY, width/2, 70) < 50) ? textType : textType;
   int f = (dist(mouseX, mouseY, width/2, 70) < 50) ? 14 : 14;
   elements(font, type, f, "Gen. " + pop.getGenerations(), width/2 - 60, 70, colorLetters); //--> No. Generations
@@ -182,14 +173,14 @@ void draw() {
   //------------------------------------------------> Renders buttons
   int inc = 0;
   for (Button button : b) {
+
     button.update();
     if (inc == 0) {
-      if (renderButton) button.create(font, h1Type); //--> Remove this condition while using the single button approach
-    } else if (inc <= 2) {
-      button.create(font, notesType);
+      button.create(font, h1Type);
     } else {
-      if (!renderButton) button.create();
+      button.create(font, notesType);
     }
+
     ++ inc;
   }
 
@@ -257,15 +248,12 @@ void mouseReleased() {
           indivCounter=0;
           ++ buttonCounter;
           delay(1000);
-          //btnTxt[0] = "Next Generation";
-          renderButton = false;
+          btnTxt[0] = "Next Generation";
           println("-------------");
-
           //---------------
           for (int a = 0; a < pamRefined.size(); ++ a) { //--> Initializes updateParams list
             updateParams.append("a");
           }
-
           //---------------
           for (int p = 0; p < pamRefined.size(); ++ p) {
             isClicked.append(1);
@@ -283,12 +271,11 @@ void mouseReleased() {
           counterGridX = 0;
           counterGridY = 0;
 
-          //---------------> Automatic fitness
           String prompt = "\"Red\"";
           if (pop.ancestors != null) {
             for (int i = 0; i < pop.ancestors.length; ++ i) {
+              String image_path = sketchPath() + "/individuo_" + i + ".png";  // TO DO - add generation folder
 
-              String image_path = sketchPath() + "/snapshots/pop_"+ nf(popCounter, 3) + "/indiv_" + nf(i, 3) + ".png";
 
               ProcessBuilder processBuilder = new ProcessBuilder();
 
@@ -316,16 +303,13 @@ void mouseReleased() {
             }
           }
 
+          pop.evolve();
+          pop.renderPop();
           indivCounter = 0;
 
           exitSketch = "2";
-          sketches.windowShutdown();
+          sketches.serverShutdown();
           exitSketch = "1";
-          serverSketches.clear();
-
-          pop.evolve();
-          pop.renderPop();
-          //println("Number of servers: " + serverSketches.size());
           println("-------------");
         }
       }
@@ -352,7 +336,7 @@ void mouseReleased() {
     counterGridX = 0;
     counterGridY = 0;
     exitSketch = "2";
-    sketches.windowShutdown();
+    sketches.serverShutdown();
     exitSketch = "1";
     btnTxt[0] = "Create Population";
     //--> Empty created objects
@@ -364,7 +348,7 @@ void mouseReleased() {
 //------------------------------------------------> Method to close all open windows
 void exit() {
   exitSketch = "2";
-  sketches.windowShutdown();
+  sketches.serverShutdown();
   thread("exitDelay");
   // $$[Further development idea] On exit, opens folder with exported pop(s).
 }
