@@ -32,7 +32,9 @@ int buttonCounter = 0; // --> count each click on evolution button
 boolean iconDisplay = false; //--> View mode
 boolean restart = false; //--> Restart button
 boolean renderButton = true; //--> View mode
-boolean playHover = false, pauseHover = false;
+boolean currentlyPlayed = false, currentlyPaused = false;
+
+boolean automatorOn = true;
 
 //------------------------------------------------> Buttons
 Button [] b = new Button [5];
@@ -111,6 +113,7 @@ void draw() {
   elements(font, type, f, "Restart", width/2 + 60, 70, colorRestart); //--> Restart Generation
 
 
+  //------------------------------------------------> Dark and light mode
   if (iconDisplay) {
     sunIcon(width - width/12 - 5, 100, 4);
     colorLetters = 60;
@@ -177,7 +180,9 @@ void draw() {
     }
   }
 
+  //------------------------------------------------]
   sectionLine(height * 0.425);
+  //------------------------------------------------]
 
   //------------------------------------------------> Renders buttons
   int inc = 0;
@@ -227,6 +232,16 @@ void draw() {
   crossoverRate = float(hs[3].getOperatorValue());
   mutationRate = float(hs[4].getOperatorValue());
   mutationScaling = float(hs[5].getOperatorValue());
+
+
+  //------------------------------------------------> Automatic evolution
+  if (buttonCounter >= 2 && automatorOn == true) {
+    if (allWindowsOpen()) { //--> This method check all windows state.
+      currentlyPlayed = true; //--> Highlights the play button.
+      automation();
+      delay(1000);
+    }
+  }
 }
 
 void mouseReleased() {
@@ -248,96 +263,61 @@ void mouseReleased() {
   for (int g  = 0; g < b.length; ++ g) {
 
     if (b[g].getHover()) {
-      //------------------------------------------------> 1. Main button
-      if (g == 0) {
-        //------------------------------------------------> 1.1 Initialize (1)
-        if (buttonCounter == 0) {
-          pop.initialize();
-          pop.renderPop();
-          indivCounter=0;
-          ++ buttonCounter;
-          delay(1000);
-          //btnTxt[0] = "Next Generation";
-          renderButton = false;
-          println("-------------");
+      if (g == 0 && buttonCounter == 0) {
+        /*
+          [---> 1. Creates population button. <---]
+         **/
+        pop.initialize();
+        pop.renderPop();
+        indivCounter=0;
+        delay(1000);
+        renderButton = false;
+        ++buttonCounter;
+        println("-------------");
 
-          //---------------
-          for (int a = 0; a < pamRefined.size(); ++ a) { //--> Initializes updateParams list
-            updateParams.append("a");
-          }
-
-          //---------------
-          for (int p = 0; p < pamRefined.size(); ++ p) {
-            isClicked.append(1);
-            cb.add(new CircleButton(width - width/12 - 5, 130 + 25*p, isClicked.get(p)));
-          }
-        } else {
-          //------------------------------------------------> 1.2 Next Generation (2 - )
-          delay(1000);
-
-          //---------------> Clears debug information
-          sketchesName.clear();
-          healthySketchesID.clear();
-          zombieSketch.clear();
-
-          counterGridX = 0;
-          counterGridY = 0;
-
-          //---------------> Automatic fitness
-          String prompt = "\"Red\"";
-          if (pop.ancestors != null) {
-            for (int i = 0; i < pop.ancestors.length; ++ i) {
-
-              String image_path = sketchPath() + "/snapshots/pop_"+ nf(popCounter, 3) + "/indiv_" + nf(i, 3) + ".png";
-
-              ProcessBuilder processBuilder = new ProcessBuilder();
-
-              processBuilder.command("/Users/ricardosacadura/Desktop/EVO/env/bin/python", "/Users/ricardosacadura/Desktop/EVO/script.py", image_path, prompt);
-
-              try {
-                Process process = processBuilder.start();
-
-                process.waitFor();
-
-                BufferedReader reader = new BufferedReader(
-                  new InputStreamReader(process.getInputStream()));
-
-                String rawFitness = reader.readLine().trim();
-
-                println("Fitness", image_path, prompt, rawFitness);
-
-                pop.getIndiv(i).setFitness(float(rawFitness));
-
-                process.destroy();
-              }
-              catch (Exception e) {
-                e.printStackTrace();
-              }
-            }
-          }
-
-          indivCounter = 0;
-
-          exitSketch = "2";
-          sketches.windowShutdown();
-          exitSketch = "1";
-          serverSketches.clear();
-
-          pop.evolve();
-          pop.renderPop();
-          //println("Number of servers: " + serverSketches.size());
-          println("-------------");
+        for (int a = 0; a < pamRefined.size(); ++ a) { //--> Initializes updateParams list
+          updateParams.append("a");
         }
-      }
-      //------------------------------------------------> 2. Debug button
-      else if (g == 1) {
+
+        for (int p = 0; p < pamRefined.size(); ++ p) {
+          isClicked.append(1);
+          cb.add(new CircleButton(width - width/12 - 5, 130 + 25*p, isClicked.get(p)));
+        }
+      } else if (g == 1) {
+        /*
+          [---> 2. Debug button. <---]
+         **/
         pop.reRenderIndiv();
-      }
-      //------------------------------------------------> 3. Run org. button
-      else if (g == 2) {
+      } else if (g == 2) {
+        /*
+          [---> 3. Run original button. <---]
+         **/
         int tabIndex = matcher(path, "/");
         String str = path.substring(0, tabIndex);
         exec("/usr/local/bin/processing-java", "--sketch=" + str, "--run");
+      } else if (g == 3) {
+        /*
+          [---> 4. Automatic evolution with CLIP button. <---]
+         **/
+        delay(1000);
+        automation();
+        ++buttonCounter;
+        automatorOn = true;
+      } else if (g == 4) {
+        /*
+          [---> 5. Pause evolution with CLIP button. <---]
+         **/
+        automatorOn = false;
+        //StringDict fitnesses = sketches.serverFitness();
+        //for (int i = 0; i < populationSize; ++ i) {
+        //  String rawFitness = fitnesses.get("indiv_"+nf(i, 3));
+        //  if (rawFitness != null) {
+        //    float fitness = float(rawFitness);
+        //    pop.getIndiv(i).setFitness(fitness); //--> Assign fitness score to each indiv.
+        //  }
+        //}
+        //[I need to check this, the idea is to evaluate candidates manually]
+        //After this, I want to return to execution but this time the automation must assume the population is already evaluated.
       }
     }
   }
@@ -359,6 +339,65 @@ void mouseReleased() {
     serverSketches.clear();
     genotype.clear();
   }
+}
+
+//------------------------------------------------> A set of instructions to evolve pops. automatically.
+void automation() {
+
+  //---------------> Automatic fitness
+  String prompt = "\"Red\""; //--> The textual instruction we give CLIP to evaluate candidates
+  // $$[Further development idea] This may be integrated on the interface for dinamic assignment
+
+  if (pop.ancestors != null) {
+    for (int i = 0; i < pop.ancestors.length; ++ i) {
+
+      String image_path = sketchPath() + "/snapshots/pop_"+ nf(popCounter, 3) + "/indiv_" + nf(i, 3) + ".png";
+
+      ProcessBuilder processBuilder = new ProcessBuilder();
+
+      processBuilder.command("/Users/ricardosacadura/Desktop/EVO/env/bin/python", "/Users/ricardosacadura/Desktop/EVO/script.py", image_path, prompt);
+
+      try {
+        Process process = processBuilder.start();
+        process.waitFor();
+
+        BufferedReader reader = new BufferedReader(
+          new InputStreamReader(process.getInputStream()));
+
+        String rawFitness = reader.readLine().trim();
+
+        println("Fitness", image_path, prompt, rawFitness);
+
+        pop.getIndiv(i).setFitness(float(rawFitness));
+
+        process.destroy();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  indivCounter = 0;
+
+  exitSketch = "2";
+  sketches.windowShutdown();
+  exitSketch = "1";
+
+  //---------------> Resets arrays
+  sketchesName.clear();
+  healthySketchesID.clear();
+  zombieSketch.clear();
+  serverSketches.clear();
+
+  //--> Reset grid counter
+  counterGridX = 0;
+  counterGridY = 0;
+
+  pop.evolve();
+  pop.renderPop();
+  //println("Number of servers: " + serverSketches.size());
+  println("-------------");
 }
 
 //------------------------------------------------> Method to close all open windows

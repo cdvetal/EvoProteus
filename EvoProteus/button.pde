@@ -70,6 +70,7 @@ class Button {
 
     fill(colorBg);
     stroke(btnIsHover ? colorOnHover : colorOff);
+    if(currentlyPlayed) stroke(colorOnHover);
     strokeWeight(1.4);
     ellipse(buttonX, buttonY, diameter, diameter); //--> Create border
 
@@ -88,6 +89,7 @@ class Button {
 
       noStroke();
       fill(btnIsHover ? colorOnHover : colorOff);
+      if(currentlyPlayed) fill(colorOnHover);
       triangle(xPos[0], yPos[0], xPos[1], yPos[1], xPos[2], yPos[2]);
     }
     //------------------------------------------------> Pause button

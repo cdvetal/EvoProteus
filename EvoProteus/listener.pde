@@ -157,3 +157,19 @@ StringList getCurrentJavaProcesses() throws Exception {
   reader.close();
   return output;
 }
+
+boolean allWindowsOpen() {
+
+  float aliveCounter = 0;
+
+  for (Map.Entry me : windowStatus.entrySet()) {
+    if (me.getValue().toString().equals("1")) {
+      ++aliveCounter;
+    }
+  }
+  if (aliveCounter == populationSize) {
+    return true;
+  } else {
+    return false;
+  }
+}
