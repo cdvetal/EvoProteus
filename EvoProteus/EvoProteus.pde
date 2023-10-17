@@ -3,7 +3,7 @@
  Towards Automated Generative Design, EvoProteus version 2.0
  Ricardo Sacadura, Penousal Machado, Tiago Martins and Luís Gonçalo (October 2023)
  at Computational Design and Visualization Lab. (DEI UC)
- Latest feature: Execution reconfiguration (Play/pause feature) (15th October)
+ Latest feature: Execution reconfiguration (Dynamic prompt) (17th October)
  --------------
  A. Main system (grid display version)
  --------------
@@ -86,6 +86,7 @@ void setup() {
   t = new ToggleButton(width/12 + 15, 101); //--> Toggle Button between Fitness and Parameters
 
   createSliders(hs); //--> Sliders / Genetic operators
+  tbox = new TextContainer(width/7, 225, 190); //--> Textual input component (prompt)
 
   //------------------------------------------------> Uploads your PDE sketchfile
   selectInput("Select a file to process:", "fileSelected");
@@ -133,7 +134,7 @@ void draw() {
   t.create(); //--> Renders toggle button
 
   //------------------------------------------------> Displays parameters
-  if (!isToggled) {
+  if (isToggled) {
 
     elements(font, textType, 14, "Parameters", width/2, 105, colorLetters);
     int i = 0;
@@ -165,19 +166,12 @@ void draw() {
       }
       ++ i;
     }
-    //------------------------------------------------> Displays fitness score
+    //------------------------------------------------> Displays textual input component.
   } else {
-    elements(font, textType, 14, "Fitness Score", width/2, 105, colorLetters);
-
-    String [] screenFitness = new String[populationSize];
-
-    StringDict fitnesses = sketches.serverFitness();
-
-    for (int i = 0; i < populationSize; ++ i) { //--> Fitness viz.
-      String rawFitness = fitnesses.get("indiv_"+nf(i, 3));
-      screenFitness[i] = "Individual "+ nf(i, 3) + " - " + rawFitness;
-      if (i<10) h1(font, textType, 12, screenFitness [i], 135 + 25*i);
-    }
+    elements(font, textType, 14, "Prompt", width/2, 105, colorLetters);
+    tbox.createContainer();
+    float tw = tbox.getTextWidth();
+    tbox.createTyperLine(tw);
   }
 
   //------------------------------------------------]
@@ -341,11 +335,21 @@ void mouseReleased() {
   }
 }
 
+void keyPressed() {
+  //--> A dynamic prompt spec. requires this.
+  if (!isToggled) {
+    k = key;
+    tbox.setKey(k);
+    tbox.processInput();
+  }
+}
+
 //------------------------------------------------> A set of instructions to evolve pops. automatically.
 void automation() {
 
   //---------------> Automatic fitness
-  String prompt = "\"Red\""; //--> The textual instruction we give CLIP to evaluate candidates
+  //String prompt = "\"Red\""; //--> The textual instruction we give CLIP to evaluate candidates
+  String prompt = tbox.getPrompt();
   // $$[Further development idea] This may be integrated on the interface for dinamic assignment
 
   if (pop.ancestors != null) {

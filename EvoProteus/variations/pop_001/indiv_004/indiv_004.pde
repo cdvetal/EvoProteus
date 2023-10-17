@@ -1,11 +1,11 @@
-float __x =177.75078; //min:0 max:200
-float __y =81.70333; //min:0 max:200
-float __width =88.09711; //min:70 max:200
-float __height =148.02226; //min:70 max:200
+float __x =149.78429; //min:0 max:200
+float __y =164.16411; //min:0 max:200
+float __width =124.37114; //min:70 max:200
+float __height =155.30984; //min:70 max:200
 
-float __r =118.00487; //min:1 max:255
-float __g =196.84218; //min:1 max:255
-float __b =144.16815; //min:1 max:255
+float __r =217.6772; //min:1 max:255
+float __g =123.23587; //min:1 max:255
+float __b =63.87033; //min:1 max:255
 
 
 void setup() {

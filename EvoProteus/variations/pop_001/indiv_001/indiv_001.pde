@@ -1,15 +1,15 @@
-float __x =121.06633; //min:0 max:200
-float __y =198.63586; //min:0 max:200
-float __width =189.3371; //min:70 max:200
-float __height =199.8176; //min:70 max:200
+float __x =118.64077; //min:0 max:200
+float __y =164.16411; //min:0 max:200
+float __width =135.77217; //min:70 max:200
+float __height =172.40173; //min:70 max:200
 
-float __r =95.4237; //min:1 max:255
-float __g =90.03042; //min:1 max:255
-float __b =180.17615; //min:1 max:255
+float __r =217.35959; //min:1 max:255
+float __g =114.91683; //min:1 max:255
+float __b =217.17064; //min:1 max:255
 
 
 void setup() {
-/*Injected line, you may delete it*/ clientSketches = new Client(this, "localhost", 3000 + 3);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");
+/*Injected line, you may delete it*/ clientSketches = new Client(this, "localhost", 3000 + 6);pid = int(ProcessHandle.current().pid());pidT = str(pid);clientSketches.write("0" + " " + sketch + " " + pidT);surface.setLocation(346,46);PSurfaceAWT awtSurface = (PSurfaceAWT)surface;smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();println("[Client] Client connected");
   size(300, 300);
   background(255);
   pixelDensity(2);
