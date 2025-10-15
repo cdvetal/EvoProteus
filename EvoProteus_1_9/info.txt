@@ -1,4 +1,0 @@
-EvoProteus version 1.9 (October 2023)
-
-This version contains the "Save your all-time favourites utility". 
-The following versions omit this feature.

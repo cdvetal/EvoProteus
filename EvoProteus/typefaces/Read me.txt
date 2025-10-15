@@ -1,7 +1,0 @@
-These folder contains both font files used in the system:
-
-Title + Main button > Anthony
-Elements and secondary buttons > Space Grotesk
-
-Please don't call this path directly it will produce unnecessary tmp. files. 
-Instead, feel free to download both fonts, the system will do the rest.
