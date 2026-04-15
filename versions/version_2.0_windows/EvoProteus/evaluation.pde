@@ -25,7 +25,7 @@ class Evaluator implements Runnable {
     Float clipScore = null;
     ProcessBuilder pb = new ProcessBuilder();
 
-    String pathScript = sketchPath() + "/MetricAPI/bridge_script.py";
+    String pathScript = sketchPath() + "MetricAPI/bridge_script.py";
     pb.command("C:/Users/cdv/anaconda3/envs/evoproteus/python", pathScript, pathImage, prompt);
 
     try {
