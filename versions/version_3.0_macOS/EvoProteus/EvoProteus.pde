@@ -1,5 +1,5 @@
 /**
- EvoProteus version 2.0 adapted for Windows.
+ EvoProteus version 3.0 adapted for MacOS.
  Ricardo Sacadura, Penousal Machado, Tiago Martins and Luís Gonçalo (August 2024)
  at Computational Design and Visualization Lab. (DEI UC)
  Latest feature: Aesthetic Predictor combined with CLIP.
